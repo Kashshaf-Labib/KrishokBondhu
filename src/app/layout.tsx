@@ -3,6 +3,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Chatbot from "@/components/Chatbot";
 
 export const metadata: Metadata = {
   title: "KrishokBondhu",
@@ -22,6 +23,7 @@ export default function RootLayout({
       <Navbar />
         <main className="Relative overflow">
           {children}
+          <Chatbot />
         </main>
         <Footer />
       </body>
