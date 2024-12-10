@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server"; // Clerk API for user details
 import mongoose from "mongoose";
 import Advice from "@/models/Advice"; // Import Advice model
+import Post from "@/models/Post";
 import { connectDB } from "@/db/config";
+import { pusher } from "@/utils/pusher"; // Import Pusher instance
 
 // Connect to the database
 connectDB();
@@ -30,17 +32,11 @@ export async function GET(
   }
 }
 
-
-
-
-
 // export async function POST(
 //   request: Request,
 //   { params }: { params: { postId: string } }
 // ) {
 //   const { postId } = params;
-
-//   console.log("POST request received for postId:", postId);
 
 //   if (!mongoose.Types.ObjectId.isValid(postId)) {
 //     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
@@ -48,8 +44,6 @@ export async function GET(
 
 //   try {
 //     const user = await currentUser(); // Retrieve the current user using Clerk
-
-//     console.log("Authenticated user:", user);
 
 //     if (!user || user.publicMetadata.role !== "expert") {
 //       return NextResponse.json(
@@ -59,8 +53,6 @@ export async function GET(
 //     }
 
 //     const { content } = await request.json();
-
-//     console.log("Content:",content);
 
 //     if (!content || content.trim().length === 0) {
 //       return NextResponse.json(
@@ -72,6 +64,7 @@ export async function GET(
 //     const newAdvice = new Advice({
 //       postId,
 //       expertId: user.id, // Use Clerk user ID
+//       expertName: user.username || "Unknown Expert", // Save the expert's username
 //       content,
 //     });
 
@@ -87,12 +80,14 @@ export async function GET(
 //   }
 // }
 
+
+
+
 export async function POST(
   request: Request,
   { params }: { params: { postId: string } }
 ) {
   const { postId } = params;
-
 
   if (!mongoose.Types.ObjectId.isValid(postId)) {
     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
@@ -117,6 +112,7 @@ export async function POST(
       );
     }
 
+    // Create a new advice
     const newAdvice = new Advice({
       postId,
       expertId: user.id, // Use Clerk user ID
@@ -125,6 +121,22 @@ export async function POST(
     });
 
     await newAdvice.save();
+
+    // Fetch the post to get the owner's userId
+    const post = await Post.findById(postId);
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    const postOwnerId = post.userId;
+
+    // Send a notification via Pusher
+    await pusher.trigger(`user-${postOwnerId}`, "new-advice", {
+      postId,
+      expertName: user.username || "Unknown Expert",
+      content,
+      createdAt: newAdvice.createdAt,
+    });
 
     return NextResponse.json(newAdvice, { status: 201 });
   } catch (error) {
@@ -135,4 +147,3 @@ export async function POST(
     );
   }
 }
-
