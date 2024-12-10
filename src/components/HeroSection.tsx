@@ -108,6 +108,7 @@ const HeroSection = ({ onExploreClick }: HeroSectionProps) => {
             variants={buttonVariants}
             whileHover="hover"
             onClick={onExploreClick}
+            
           >
             Explore Features
           </motion.button>

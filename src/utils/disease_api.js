@@ -1,4 +1,4 @@
-// utils/api.js
+//src/utils/disease_api.js:
 import axios from 'axios';
 
 export async function predictDisease(file) {
@@ -17,3 +17,5 @@ export async function predictDisease(file) {
         return null;
     }
 }
+
+

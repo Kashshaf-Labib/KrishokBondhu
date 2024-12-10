@@ -39,7 +39,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between mx-auto max-w-[1440px] px-6 lg:px-20 3xl:px-0 relative z-30 py-5">
+    <nav className="flex items-center justify-between mx-auto max-w-[1440px] px-6 lg:px-20 3xl:px-0 relative z-30 py-2 bg-white shadow-md border-b border-gray-200">
       <Link href="/" className="pr-4">
         <div className="flex items-center">
           <Image
@@ -103,7 +103,6 @@ const Navbar = () => {
         )}
       </ul>
 
-      {/* Conditional rendering based on user authentication state */}
       <div className="hidden lg:flex lg:justify-between lg:items-center">
         {isSignedIn ? (
           <UserButton
@@ -133,7 +132,6 @@ const Navbar = () => {
         className="inline-block cursor-pointer lg:hidden"
       />
 
-      {/* Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-40 transform ${
           menuOpen ? "translate-x-0" : "translate-x-full"
@@ -188,7 +186,6 @@ const Navbar = () => {
             )
           )}
 
-          {/* Conditionally render Login or UserButton for mobile menu */}
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (

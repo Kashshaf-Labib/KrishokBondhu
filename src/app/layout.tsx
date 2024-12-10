@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "KrishokBondhu",
@@ -17,9 +19,11 @@ export default function RootLayout({
     <ClerkProvider dynamic>
     <html lang="en">
       <body>
+      <Navbar />
         <main className="Relative overflow">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
     </ClerkProvider>
