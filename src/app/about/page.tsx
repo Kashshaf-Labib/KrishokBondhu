@@ -167,7 +167,7 @@ const About = () => {
             </div>
             <div className="w-1/4 flex flex-col items-center">
               <img
-                src="/Navid.jpg"
+                src="/Navid.jpeg"
                 alt="Navid Kamal"
                 className="w-35 h-35 rounded-full mb-4 shadow-lg"
               />
