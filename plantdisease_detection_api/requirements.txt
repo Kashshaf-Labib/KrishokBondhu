@@ -1,6 +1,9 @@
-ctransformers==0.2.5
-sentence-transformers==2.2.2
-langchain==0.0.225
-langchain
-langchain-groq
+fastapi
+uvicorn
+tensorflow
+numpy
+pillow
 python-dotenv
+pydantic
+langchain-groq
+scikit-learn

@@ -1,14 +1,12 @@
 //src/app/disease-detection/page.tsx:
 
-"use client";
-import { predictDisease } from "@/utils/disease_api";
-import { useAuth } from "@clerk/nextjs";
-import { Leaf, Upload, X } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+'use client';
+import { useAuth } from '@clerk/nextjs';
+import jsPDF from 'jspdf';
+import { Leaf, Upload, X } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 interface Prediction {
   disease: string;
@@ -28,14 +26,14 @@ export default function DiseasePredictionPage() {
 
   useEffect(() => {
     if (!isSignedIn) {
-      router.push("/sign-in");
+      router.push('/sign-in');
     }
   }, [isSignedIn, router]);
 
   const handleImageUpload = (
-    event: React.ChangeEvent<HTMLInputElement> | File
+    event: React.ChangeEvent<HTMLInputElement> | File,
   ) => {
-    const file = "target" in event ? event.target.files?.[0] : event;
+    const file = 'target' in event ? event.target.files?.[0] : event;
     if (file) {
       setSelectedFile(file);
       setSelectedImage(URL.createObjectURL(file));
@@ -46,9 +44,9 @@ export default function DiseasePredictionPage() {
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -66,44 +64,84 @@ export default function DiseasePredictionPage() {
     if (!selectedFile) return;
     setIsLoading(true);
     try {
+      // First get the disease prediction
       const formData = new FormData();
-      formData.append("file", selectedFile);
+      formData.append('file', selectedFile);
 
-      // Use fetch to send data to the API route
-      const response = await fetch("/api/disease-detection", {
-        method: "POST",
+      const response = await fetch('/api/disease-detection', {
+        method: 'POST',
         body: formData,
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        console.error("Prediction request failed:", await response.text());
-        setIsLoading(false);
-        return;
+        throw new Error(`Prediction request failed: ${await response.text()}`);
       }
 
       const data = await response.json();
 
       if (data.success) {
-        setPrediction({
-          disease: data.data.disease,
-          confidence: data.data.confidence, // Assuming confidence is already in percentage
-          severity: "Moderate", // Replace with actual data if available from API
-          recommendations: [
-            "Apply copper-based fungicide",
-            "Improve air circulation",
-            "Reduce overhead watering",
-          ],
-        });
+        try {
+          // Get recommendations for the detected disease
+          const queryResponse = await fetch('http://localhost:8000/query', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              query: `Give me a brief severity analysis and 3 specific prevention recommendations for ${data.data.disease} plant disease. Format the response as JSON with the following structure: { "severity": "string", "recommendations": ["string", "string", "string"] }`,
+            }),
+          });
+
+          if (!queryResponse.ok) {
+            throw new Error('Failed to get recommendations');
+          }
+
+          const recommendationData = await queryResponse.json();
+
+          // Remove the backticks and clean the response
+          const cleanedContent = recommendationData.content
+            .replace(/```json\n?|\n?```/g, '')
+            .trim();
+
+          // Parse the cleaned JSON
+          const parsedRecommendations = JSON.parse(cleanedContent);
+
+          // Set the prediction with all required fields
+          setPrediction({
+            disease: data.data.disease,
+            confidence: data.data.confidence,
+            severity: parsedRecommendations.severity,
+            recommendations: parsedRecommendations.recommendations,
+          });
+
+          console.log('Setting prediction:', {
+            disease: data.data.disease,
+            confidence: data.data.confidence,
+            severity: parsedRecommendations.severity,
+            recommendations: parsedRecommendations.recommendations,
+          });
+        } catch (queryError) {
+          console.error('Query error:', queryError);
+          setPrediction({
+            disease: data.data.disease,
+            confidence: data.data.confidence,
+            severity: 'Unable to determine',
+            recommendations: ['Unable to fetch recommendations at this time'],
+          });
+        }
       } else {
-        console.error("Prediction error:", data.message);
+        throw new Error(data.message || 'Prediction failed');
       }
     } catch (error) {
-      console.error("Error during prediction:", error);
+      console.error('Error during prediction:', error);
+      setPrediction(null);
     } finally {
       setIsLoading(false);
     }
   };
 
+  console.log(prediction);
   const clearImage = () => {
     if (selectedImage) {
       URL.revokeObjectURL(selectedImage);
@@ -123,14 +161,14 @@ export default function DiseasePredictionPage() {
     const pdf = new jsPDF();
 
     // Add title
-    pdf.setFont("helvetica", "bold");
+    pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(18);
-    pdf.text("Plant Disease Detection Report", 20, 20);
+    pdf.text('Plant Disease Detection Report', 20, 20);
 
     // Disease Information Section
-    pdf.setFont("helvetica", "normal");
+    pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(14);
-    pdf.text("Disease Information", 20, 40);
+    pdf.text('Disease Information', 20, 40);
     pdf.setFontSize(12);
     pdf.text(`- Disease: ${prediction.disease}`, 20, 50);
     pdf.text(`- Confidence: ${prediction.confidence}%`, 20, 60);
@@ -140,10 +178,10 @@ export default function DiseasePredictionPage() {
     let yOffset = 80;
 
     // Recommendations Section
-    pdf.setFont("helvetica", "bold");
+    pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(14);
-    pdf.text("Recommendations", 20, yOffset);
-    pdf.setFont("helvetica", "normal");
+    pdf.text('Recommendations', 20, yOffset);
+    pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(12);
     yOffset += 10;
     prediction.recommendations.forEach((rec, index) => {
@@ -154,7 +192,7 @@ export default function DiseasePredictionPage() {
     yOffset += prediction.recommendations.length * 10 + 10;
 
     // Add image (with proportional scaling)
-    const imageElement = document.createElement("img");
+    const imageElement = document.createElement('img');
     imageElement.src = selectedImage;
 
     imageElement.onload = () => {
@@ -163,16 +201,16 @@ export default function DiseasePredictionPage() {
       const imgHeight = imgWidth / aspectRatio;
 
       // Add the image to the PDF, with adjusted spacing
-      pdf.addImage(selectedImage, "JPEG", 20, yOffset, imgWidth, imgHeight);
+      pdf.addImage(selectedImage, 'JPEG', 20, yOffset, imgWidth, imgHeight);
 
       // Footer Section
       yOffset += imgHeight + 10;
-      pdf.setFont("helvetica", "italic");
+      pdf.setFont('helvetica', 'italic');
       pdf.setFontSize(10);
-      pdf.text("Generated by Plant Disease Detection System", 20, yOffset);
+      pdf.text('Generated by Plant Disease Detection System', 20, yOffset);
 
       // Save the PDF
-      pdf.save("disease_prediction_report.pdf");
+      pdf.save('disease_prediction_report.pdf');
     };
   };
 
@@ -210,10 +248,10 @@ export default function DiseasePredictionPage() {
               className={`relative h-80 border-2 rounded-xl flex items-center justify-center
                 ${
                   dragActive
-                    ? "border-green-500 bg-green-50"
-                    : "border-dashed border-gray-300"
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-dashed border-gray-300'
                 }
-                ${selectedImage ? "border-solid border-green-500" : ""}`}
+                ${selectedImage ? 'border-solid border-green-500' : ''}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
@@ -245,11 +283,10 @@ export default function DiseasePredictionPage() {
                   >
                     <X className="h-4 w-4" />
                   </button>
-                  <Image
-                    src={selectedImage}
-                    alt="Selected plant"
-                    fill
-                    className="object-contain rounded-lg"
+                  <img
+                     src={selectedImage}
+                     alt="Selected plant"
+                     className="object-contain rounded-lg h-full w-full"
                   />
                 </div>
               )}
@@ -262,11 +299,11 @@ export default function DiseasePredictionPage() {
                 className={`mt-6 w-full py-4 rounded-xl text-white font-medium 
                   ${
                     isLoading
-                      ? "bg-gray-400"
-                      : "bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900"
+                      ? 'bg-gray-400'
+                      : 'bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900'
                   }`}
               >
-                {isLoading ? "Analyzing Image..." : "Get Prediction"}
+                {isLoading ? 'Analyzing Image...' : 'Get Prediction'}
               </button>
             )}
           </div>
@@ -274,7 +311,7 @@ export default function DiseasePredictionPage() {
           {/* Prediction Section */}
           <div
             className={`bg-white/80 backdrop-blur-sm shadow-xl rounded-xl p-6 transition-all duration-500 
-            ${prediction ? "opacity-100" : "opacity-0"}`}
+            ${prediction ? 'opacity-100' : 'opacity-0'}`}
           >
             {prediction ? (
               <div className="space-y-6">

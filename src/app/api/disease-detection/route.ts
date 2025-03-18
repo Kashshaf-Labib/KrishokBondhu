@@ -5,15 +5,18 @@ import {connectDB} from "@/db/config";
 import Prediction from "@/models/Prediction";
 import { predictDisease } from "@/utils/disease_api"; // Import the prediction function
 import { currentUser } from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
+import {auth} from "@clerk/nextjs/server";
 import streamifier from "streamifier";
 
 connectDB();
 
 export const POST = async (req: Request) => {
   try {
-    const user = await currentUser();
-    if (!user)
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    // const {userId} = await auth();
+    // console.log(userId);
+    // if (!userId)
+    //   return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const formData = await req.formData();
     const file = formData.get("file") as Blob | null;
@@ -48,7 +51,7 @@ export const POST = async (req: Request) => {
 
     // Store prediction in MongoDB
     const newPrediction = new Prediction({
-      userId: user.id,
+      userId: "12343453",
       imageUrl: (uploadResult as any).secure_url,
       disease: prediction.class,
       confidence: prediction.confidence * 100,

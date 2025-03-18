@@ -6,7 +6,7 @@ export async function predictDisease(file) {
     formData.append('file', file);
 
     try {
-        const response = await axios.post('http://localhost:8000/predict', formData, {
+        const response = await axios.post('http://localhost:8000/disease-detection', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

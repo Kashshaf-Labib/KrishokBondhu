@@ -78,6 +78,23 @@ except FileNotFoundError:
     logger.error(f"Error: Crop prediction model not found at {model_path}")
     crop_model = None
 
+fertilizer_model_path = "./model/fertilizerRecommendation.keras"
+try:
+    FERTILIZER_MODEL = tf.keras.models.load_model(fertilizer_model_path)
+    logger.info("Fertilizer recommendation model loaded successfully")
+except Exception as e:
+    logger.error(f"Error loading fertilizer model: {e}")
+    FERTILIZER_MODEL = None
+
+class FertilizerRecommendationRequest(BaseModel):
+    temperature: float
+    humidity: float
+    moisture: float
+    soil_type: int  # Encoded as integer
+    crop_type: int  # Encoded as integer
+    nitrogen: float
+    potassium: float
+    phosphorous: float
 
 class CropPredictionRequest(BaseModel):
     N: float
@@ -88,6 +105,22 @@ class CropPredictionRequest(BaseModel):
     ph: float
     rainfall: float
 
+fertilizer_mapping = {
+    0: "10-10-10",
+    1: "10-26-26",
+    2: "14-14-14",
+    3: "14-35-14",
+    4: "15-15-15",
+    5: "17-17-17",
+    6: "20-20",
+    7: "28-28",
+    8: "DAP",
+    9: "Potassium chloride",
+    10: "Potassium sulfate",
+    11: "Superphosphate",
+    12: "TSP",
+    13: "Urea"
+}
 
 # Define class names
 CLASS_NAMES = [
@@ -122,7 +155,7 @@ async def ping():
 
 
 # Prediction route
-@app.post("/predict")
+@app.post("/disease-detection")
 async def predict(file: UploadFile = File(...)):
     # Read and preprocess image
     image = read_file_as_image(await file.read())
@@ -153,7 +186,30 @@ def query_llm(request: QueryRequest):
         logger.error(f"Error processing query: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/recommendfertilizer")
+async def recommend_fertilizer(data: FertilizerRecommendationRequest):
+    if FERTILIZER_MODEL is None:
+        raise HTTPException(status_code=503, detail="Fertilizer recommendation model is not available")
 
+    # Convert input data into NumPy array
+    input_data = np.array([[data.temperature, data.humidity, data.moisture,
+                            data.soil_type, data.crop_type, data.nitrogen,
+                            data.potassium, data.phosphorous]])
+
+    # Ensure input type is float32 (as required by TensorFlow)
+    input_data = input_data.astype(np.float32)
+
+    # Make prediction
+    prediction = FERTILIZER_MODEL.predict(input_data)
+    predicted_fertilizer_index = np.argmax(prediction[0])  # Get index of max confidence class
+
+    # Map index to fertilizer name
+    predicted_fertilizer = fertilizer_mapping.get(predicted_fertilizer_index, "Unknown")
+
+    return {
+        "fertilizer": predicted_fertilizer,
+        "confidence": float(np.max(prediction[0])),
+    }
 @app.post("/recommendcrop")
 async def predict_crop(data: CropPredictionRequest):
     if crop_model is None:
