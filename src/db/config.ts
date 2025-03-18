@@ -1,22 +1,3 @@
-// import mongoose from "mongoose";
-
-// const connectDB = async () => {
-//   if (!process.env.MONGODB_URI) {
-//     throw new Error("MONGODB_URI is not defined");
-//   }
-//   try {
-//     await mongoose.connect(process.env.MONGODB_URI, {
-//       dbName: process.env.DBNAME,
-//     });
-//     console.log("Connected to MongoDB");
-//   } catch (err) {
-//     console.error("Error connecting to MongoDB:", err);
-//     process.exit(1);
-//   }
-// };
-
-// export default connectDB;
-
 import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
