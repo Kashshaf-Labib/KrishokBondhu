@@ -32,6 +32,37 @@ This project uses machine learning models trained on the following datasets:
    - Provides fertilizer suggestions based on soil composition
    - Takes into account NPK values and other soil parameters
 
+## Data Sources
+
+1. **Plant Disease Dataset**
+
+   - Based on [Plant Disease Detection Notebook](https://www.kaggle.com/code/babykamal/plant-disease-detection-ipynb)
+   - Contains images of various plant diseases across different crops
+
+2. **Fertilizer Recommendation Dataset**
+
+   - Based on [Fertilizer Recommendation Notebook](https://www.kaggle.com/code/babykamal/fertilizer-recommendation)
+   - Includes soil characteristics and corresponding fertilizer recommendations
+
+3. **Bangladesh Soil Data**
+   - Based on [Fertilizer Recommendation Guide 2018](https://moa.portal.gov.bd/sites/default/files/files/moa.portal.gov.bd/page/9d1b92d4_1793_43af_9425_0ed49f27b8d0/FRG-2018%20%28English%29.pdf)
+   - Contains area-wise soil composition data for Bangladesh including:
+     - Nitrogen (N) levels
+     - Phosphorus (P) levels
+     - Potasium(K) levels
+     - pH values
+   - Data integrated into MongoDB for region-specific recommendations
+
+## Database Schema
+
+The MongoDB database includes collections for:
+
+- User profiles
+- Disease predictions
+- Area-specific soil data from FRG 2018
+- Fertilizer recommendations
+- Crop recommendations
+
 ## Getting Started
 
 1. Clone the repository:
