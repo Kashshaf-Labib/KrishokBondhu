@@ -174,17 +174,66 @@ async def predict(file: UploadFile = File(...)):
         "confidence": float(confidence),
     }
 
+# Add this constant at the top with other constants
+WEBSITE_INFO_BENGALI = """
+কৃষকবন্ধু একটি কৃষি সহায়তা ওয়েবসাইট যা আপনাকে তিনটি মূল সেবা প্রদান করে:
 
+১. ফসল সুপারিশ: আপনার মাটির এন-পি-কে, পিএইচ, বৃষ্টিপাত, তাপমাত্রা ইত্যাদি দিয়ে সর্বোত্তম ফসল নির্বাচন করুন।
+
+২. সার সুপারিশ: আপনার ফসল এবং মাটির তথ্য দিয়ে সঠিক সারের পরিমাণ জানুন।
+
+৩. রোগ সনাক্তকরণ: আপনার গাছের পাতার ছবি আপলোড করে রোগ সনাক্ত করুন এবং প্রতিকার জানুন।
+
+ব্যবহার পদ্ধতি:
+- রোগ সনাক্তকরণ: গাছের আক্রান্ত পাতার ছবি তুলুন এবং আপলোড করুন
+- ফসল সুপারিশ: মাটি পরীক্ষার রিপোর্ট এবং আবহাওয়ার তথ্য দিন
+- সার সুপারিশ: জমির অবস্থা এবং ফসলের তথ্য প্রদান করুন
+"""
+
+# Update the query function
 @app.post("/query", response_model=QueryResponse)
 def query_llm(request: QueryRequest):
     logger.info(f"Received query: {request.query}")
     try:
-        content = get_llm_response(request.query)
-        logger.info(f"Response: {content}")
-        return QueryResponse(content=content)
+        # Modify query to get Bengali response
+        disease_name_bengali = {
+            "Tomato_Tomato_YellowLeaf_Curl_Virus": "টমেটো ইয়েলো লিফ কার্ল ভাইরাস",
+            # Add more disease name translations as needed
+        }
+        
+        disease_name = request.query.split("for ")[1].split(" plant")[0]
+        bengali_name = disease_name_bengali.get(disease_name, disease_name)
+        
+        modified_query = f"""
+        Give response in Bengali (Bangla) language for the following plant disease:
+        Disease: {bengali_name}
+        
+        Format the response in clean JSON as:
+        {{
+            "disease": "রোগের নাম বাংলায়",
+            "severity": "রোগের মাত্রা এবং বিস্তারিত বর্ণনা",
+            "recommendations": [
+                "প্রতিকার ১",
+                "প্রতিকার ২",
+                "প্রতিকার ৩"
+            ]
+        }}
+        """
+        
+        content = get_llm_response(modified_query)
+        # Clean the response
+        cleaned_content = content.replace('```json\n', '').replace('\n```', '').strip()
+        
+        logger.info(f"Clean response: {cleaned_content}")
+        return QueryResponse(content=cleaned_content)
+        
     except Exception as e:
         logger.error(f"Error processing query: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        return QueryResponse(content=json.dumps({
+            "disease": "ত্রুটি",
+            "severity": "দুঃখিত, একটি সমস্যা হয়েছে",
+            "recommendations": ["অনুগ্রহ করে আবার চেষ্টা করুন"]
+        }))
 
 @app.post("/recommendfertilizer")
 async def recommend_fertilizer(data: FertilizerRecommendationRequest):
@@ -218,6 +267,40 @@ async def predict_crop(data: CropPredictionRequest):
     prediction = crop_model.predict(input_data)
     return {"prediction": prediction[0]}
 
+class ChatMessage(BaseModel):
+    message: str
+
+@app.post("/message")
+def chat_message(request: ChatMessage):
+    logger.info(f"Received chat message: {request.message}")
+    try:
+        # System prompt to ensure Bengali responses
+        system_prompt = """
+        You are a helpful agricultural assistant who always responds in Bengali (Bangla) language.
+        Only answer questions related to agriculture, farming, crops, plants, soil, fertilizers, and weather.
+        If the question is not related to agriculture, politely decline in Bengali.
+        Keep responses concise but informative.
+        """
+        
+        modified_query = f"""
+        Follow these rules:
+        1. Respond only in Bengali (Bangla) language
+        2. If the question is not about agriculture, respond: "দুঃখিত, আমি শুধুমাত্র কৃষি সংক্রান্ত প্রশ্নের উত্তর দিতে পারি।"
+        3. Keep the response friendly and helpful
+        
+        User question: {request.message}
+        """
+
+        # Get response from LLM
+        response = get_llm_response(modified_query)
+        logger.info(f"Chat response: {response}")
+        
+        return {"content": response}
+    except Exception as e:
+        logger.error(f"Error in chat: {e}")
+        return {
+            "content": "দুঃখিত, একটি ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
+        }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)

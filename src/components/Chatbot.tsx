@@ -1,41 +1,67 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
+import axios from 'axios';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from 'react';
 
 const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false); // Modal open/close state
-  const [userInput, setUserInput] = useState(""); // User's query
-  const [chatLog, setChatLog] = useState<{ sender: string; message: string }[]>([]); // Chat history
+  const [isOpen, setIsOpen] = useState(false);
+  const [userInput, setUserInput] = useState('');
+  const [chatLog, setChatLog] = useState<{ sender: string; message: string }[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
 
-    setChatLog((prev) => [...prev, { sender: "user", message: userInput }]);
+    // Add user message to chat
+    setChatLog(prev => [...prev, { sender: 'user', message: userInput }]);
+    setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8000/query", {
-        query: userInput,
+      const response = await axios.post('http://localhost:8000/message', {
+        message: userInput,
       });
-      const botResponse = response.data.content;
 
-      setChatLog((prev) => [...prev, { sender: "bot", message: botResponse }]);
+      // Add bot response to chat
+      if (response.data && response.data.content) {
+        setChatLog(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            message: response.data.content,
+          },
+        ]);
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
-      setChatLog((prev) => [
+      console.error('Chat error:', error);
+      setChatLog(prev => [
         ...prev,
-        { sender: "bot", message: "Sorry, I couldn't process that. Please try again." },
+        {
+          sender: 'bot',
+          message: 'দুঃখিত, একটি ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।',
+        },
       ]);
+    } finally {
+      setIsLoading(false);
+      setUserInput('');
     }
+  };
 
-    setUserInput("");
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   return (
     <>
-      {/* Chat Button */}
       <motion.button
         className="fixed bottom-6 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-110 z-50"
         onClick={toggleChat}
@@ -45,7 +71,6 @@ const Chatbot = () => {
         💬
       </motion.button>
 
-      {/* Chat Modal */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -53,12 +78,11 @@ const Chatbot = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
           >
-            {/* Header */}
             <div className="bg-green-600 text-white p-4 flex justify-between items-center rounded-t-xl">
-              <h2 className="text-lg font-semibold">🌱 Chat with Us</h2>
+              <h2 className="text-lg font-semibold">🌱 কৃষি সহায়ক</h2>
               <button
                 className="text-white text-2xl font-bold"
                 onClick={toggleChat}
@@ -68,44 +92,60 @@ const Chatbot = () => {
               </button>
             </div>
 
-            {/* Chat Content */}
             <div className="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-4">
               {chatLog.length === 0 && (
                 <p className="text-center text-gray-500 text-sm">
-                  Start a conversation with us! 🌾
+                  আপনার কৃষি সংক্রান্ত প্রশ্ন জিজ্ঞাসা করুন! 🌾
                 </p>
               )}
               {chatLog.map((entry, index) => (
                 <motion.div
                   key={index}
                   className={`p-3 rounded-lg max-w-[80%] ${
-                    entry.sender === "user"
-                      ? "bg-green-500 text-white ml-auto"
-                      : "bg-gray-200 text-gray-900"
+                    entry.sender === 'user'
+                      ? 'bg-green-500 text-white ml-auto'
+                      : 'bg-gray-200 text-gray-900'
                   }`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
                 >
-                  <p className="text-sm font-medium">{entry.message}</p>
+                  <p className="text-sm font-medium whitespace-pre-wrap">
+                    {entry.message}
+                  </p>
                 </motion.div>
               ))}
+              {isLoading && (
+                <motion.div
+                  className="p-3 rounded-lg max-w-[80%] bg-gray-200"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <p className="text-sm font-medium">ভাবছি... 🤔</p>
+                </motion.div>
+              )}
             </div>
 
-            {/* Input Box */}
             <div className="p-4 bg-white border-t flex items-center">
               <input
                 type="text"
                 className="flex-1 border border-gray-300 rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-400 text-sm placeholder-gray-400"
-                placeholder="Ask me anything..."
+                placeholder="আপনার প্রশ্ন লিখুন..."
                 value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
+                onChange={e => setUserInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
               />
               <button
-                className="bg-green-600 text-white px-5 py-3 rounded-r-lg hover:bg-green-700 transition font-semibold"
+                className={`px-5 py-3 rounded-r-lg text-white font-semibold transition ${
+                  isLoading
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-700'
+                }`}
                 onClick={handleSendMessage}
+                disabled={isLoading}
               >
-                Send
+                পাঠান
               </button>
             </div>
           </motion.div>
@@ -116,8 +156,3 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
-
-
-
-
-

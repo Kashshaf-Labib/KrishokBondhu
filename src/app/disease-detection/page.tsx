@@ -4,7 +4,6 @@
 import { useAuth } from '@clerk/nextjs';
 import jsPDF from 'jspdf';
 import { Leaf, Upload, X } from 'lucide-react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -89,7 +88,7 @@ export default function DiseasePredictionPage() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              query: `Give me a brief severity analysis and 3 specific prevention recommendations for ${data.data.disease} plant disease. Format the response as JSON with the following structure: { "severity": "string", "recommendations": ["string", "string", "string"] }`,
+              query: `Give me a brief severity analysis and 3 specific prevention recommendations for ${data.data.disease} plant disease.`,
             }),
           });
 
@@ -98,25 +97,10 @@ export default function DiseasePredictionPage() {
           }
 
           const recommendationData = await queryResponse.json();
+          const parsedRecommendations = JSON.parse(recommendationData.content);
 
-          // Remove the backticks and clean the response
-          const cleanedContent = recommendationData.content
-            .replace(/```json\n?|\n?```/g, '')
-            .trim();
-
-          // Parse the cleaned JSON
-          const parsedRecommendations = JSON.parse(cleanedContent);
-
-          // Set the prediction with all required fields
           setPrediction({
-            disease: data.data.disease,
-            confidence: data.data.confidence,
-            severity: parsedRecommendations.severity,
-            recommendations: parsedRecommendations.recommendations,
-          });
-
-          console.log('Setting prediction:', {
-            disease: data.data.disease,
+            disease: parsedRecommendations.disease || data.data.disease,
             confidence: data.data.confidence,
             severity: parsedRecommendations.severity,
             recommendations: parsedRecommendations.recommendations,
@@ -126,8 +110,10 @@ export default function DiseasePredictionPage() {
           setPrediction({
             disease: data.data.disease,
             confidence: data.data.confidence,
-            severity: 'Unable to determine',
-            recommendations: ['Unable to fetch recommendations at this time'],
+            severity: 'রোগের মাত্রা নির্ধারণ করা যায়নি',
+            recommendations: [
+              'সুপারিশ পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।',
+            ],
           });
         }
       } else {
@@ -284,9 +270,9 @@ export default function DiseasePredictionPage() {
                     <X className="h-4 w-4" />
                   </button>
                   <img
-                     src={selectedImage}
-                     alt="Selected plant"
-                     className="object-contain rounded-lg h-full w-full"
+                    src={selectedImage}
+                    alt="Selected plant"
+                    className="object-contain rounded-lg h-full w-full"
                   />
                 </div>
               )}
@@ -316,22 +302,27 @@ export default function DiseasePredictionPage() {
             {prediction ? (
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-gray-800">
-                  Analysis Results
+                  ফলাফল বিশ্লেষণ
                 </h3>
                 <p className="text-2xl font-bold text-green-800">
-                  Detected Disease: {prediction.disease}
+                  সনাক্তকৃত রোগ: {prediction.disease}
                 </p>
-                <p>Confidence: {prediction.confidence}%</p>
-                <p>Severity: {prediction.severity}</p>
-                <ul>
-                  {prediction.recommendations.map((rec, index) => (
-                    <li key={index}>{rec}</li>
-                  ))}
-                </ul>
+                <p>নির্ভুলতা: {prediction.confidence}%</p>
+                <p>রোগের মাত্রা: {prediction.severity}</p>
+                <div className="mt-4">
+                  <h4 className="font-bold mb-2">প্রতিকারের উপায়:</h4>
+                  <ul className="list-disc pl-5 space-y-2">
+                    {prediction.recommendations.map((rec, index) => (
+                      <li key={index} className="text-gray-700">
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ) : (
               <p className="text-gray-500">
-                Upload an image to get started with the analysis.
+                বিশ্লেষণের জন্য একটি ছবি আপলোড করুন।
               </p>
             )}
           </div>
