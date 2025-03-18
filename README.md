@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KrishokBondhu - Agricultural Assistant Platform
+
+KrishokBondhu is a comprehensive agricultural assistance platform that helps farmers with crop recommendations, fertilizer suggestions, and plant disease detection.
+
+## Features
+
+- **Plant Disease Detection**: Upload plant leaf images to detect diseases
+- **Fertilizer Recommendation**: Get personalized fertilizer recommendations based on soil conditions
+- **Crop Recommendation**: Receive suggestions for suitable crops based on soil and weather conditions
+- **AI-Powered Chatbot**: Agricultural assistance chatbot in Bengali language
+
+## Technology Stack
+
+- **Frontend**: Next.js, TypeScript, Tailwind CSS, Framer Motion
+- **Backend**: FastAPI, Python
+- **AI/ML**: TensorFlow, scikit-learn
+- **Authentication**: Clerk
+- **Cloud Services**: Cloudinary (image storage)
+
+## Machine Learning Models
+
+This project uses machine learning models trained on the following datasets:
+
+1. **Plant Disease Detection Model**
+
+   - Based on [Plant Disease Detection Notebook](https://www.kaggle.com/code/babykamal/plant-disease-detection-ipynb)
+   - Detects various plant diseases from leaf images
+   - Supports multiple crops including tomato, potato, and pepper
+
+2. **Fertilizer Recommendation Model**
+   - Based on [Fertilizer Recommendation Notebook](https://www.kaggle.com/code/babykamal/fertilizer-recommendation)
+   - Provides fertilizer suggestions based on soil composition
+   - Takes into account NPK values and other soil parameters
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/krishokbondhu.git
+cd krishokbondhu
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Start the FastAPI backend:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd plantdisease_detection_api
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Endpoints
 
-## Learn More
+- `/disease-detection`: Plant disease detection endpoint
+- `/fertilizer`: Fertilizer recommendation endpoint
+- `/crop`: Crop recommendation endpoint
+- `/message`: Chatbot interaction endpoint
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Plant Disease Detection model based on work by [babykamal on Kaggle](https://www.kaggle.com/code/babykamal/plant-disease-detection-ipynb)
+- Fertilizer Recommendation model based on work by [babykamal on Kaggle](https://www.kaggle.com/code/babykamal/fertilizer-recommendation)
+- [Next.js](https://nextjs.org) for the frontend framework
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend framework
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
