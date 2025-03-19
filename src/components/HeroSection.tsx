@@ -69,9 +69,8 @@ const HeroSection = ({ onExploreClick }: HeroSectionProps) => {
           className="text-6xl font-sans-semibold text-white drop-shadow-lg glow-effect"
           variants={textVariants}
         >
-          Nurturing Agriculture
-          <br />
-          with Intelligent Solutions
+          বুদ্ধিমান সমাধানের মাধ্যমে <br />
+          কৃষির বিকাশ
         </motion.h1>
 
         {/* Tagline */}
@@ -79,8 +78,8 @@ const HeroSection = ({ onExploreClick }: HeroSectionProps) => {
           className="mt-4 text-2xl font-medium text-white drop-shadow-md"
           variants={textVariants}
         >
-          Preserving the legacy of traditional farming while introducing
-          AI-powered innovations.
+          ঐতিহ্যবাহী কৃষির ধারাকে সংরক্ষণ করে, এআই-চালিত উদ্ভাবনের নতুন দিগন্ত
+          উন্মোচন।
         </motion.p>
 
         {/* Description */}
@@ -88,9 +87,9 @@ const HeroSection = ({ onExploreClick }: HeroSectionProps) => {
           className="mt-2 text-lg font-light text-white drop-shadow-sm max-w-xl "
           variants={textVariants}
         >
-          Our platform delivers precise recommendations, enabling farmers to
-          boost productivity, optimize resources, and embrace a sustainable
-          future.
+          আমাদের প্ল্যাটফর্ম সঠিক পরামর্শ প্রদান করে, যা কৃষকদের উৎপাদনশীলতা
+          বৃদ্ধি, সম্পদের সর্বোত্তম ব্যবহার, এবং টেকসই ভবিষ্যতের জন্য প্রস্তুত
+          করতে সহায়তা করে।
         </motion.p>
 
         {/* Buttons */}
@@ -101,16 +100,15 @@ const HeroSection = ({ onExploreClick }: HeroSectionProps) => {
             whileHover="hover"
             onClick={() => router.push("/sign-up")}
           >
-            Join Now
+            যোগ দিন
           </motion.button>
           <motion.button
             className="px-8 py-4 text-lg font-semibold bg-white rounded-full shadow-lg transition-all  hover:bg-green-950 hover:scale-105"
             variants={buttonVariants}
             whileHover="hover"
             onClick={onExploreClick}
-            
           >
-            Explore Features
+            ফিচারগুলি দেখুন
           </motion.button>
         </div>
       </motion.div>

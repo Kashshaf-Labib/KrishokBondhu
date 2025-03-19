@@ -98,7 +98,7 @@ const PostCard: React.FC<PostCardProps> = ({
             className="text-sm text-green-700 hover:underline"
             onClick={() => setIsModalOpen(true)}
           >
-            Expert Advice
+            বিশেষজ্ঞ পরামর্শ
           </button>
         </div>
       </motion.div>

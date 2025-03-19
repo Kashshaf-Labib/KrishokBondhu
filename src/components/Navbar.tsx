@@ -123,19 +123,19 @@ const Navbar = () => {
                     href="/disease-detection"
                     className="block px-4 py-2 text-slate-950 hover:bg-green-100 transition-colors"
                   >
-                    Plant Disease Detection
+                    গাছের রোগ সনাক্তকরণ
                   </Link>
                   <Link
                     href="/crop-recommendation"
                     className="block px-4 py-2 text-slate-950 hover:bg-green-100 transition-colors"
                   >
-                    Crop Recommendation
+                    ফসল নির্বাচন
                   </Link>
                   <Link
                     href="/fertilizer-recommendation"
                     className="block px-4 py-2 text-slate-950 hover:bg-green-100 transition-colors"
                   >
-                    Fertilizer Recommendation
+                    সঠিক সার নির্বাচন
                   </Link>
                 </div>
               )}
@@ -155,12 +155,12 @@ const Navbar = () => {
       <div className="hidden lg:flex lg:justify-between lg:items-center">
         {isSignedIn && (
           <div className="relative mr-4" ref={notificationRef}>
-            <div 
-              onClick={toggleNotifications} 
+            <div
+              onClick={toggleNotifications}
               className="cursor-pointer relative"
             >
-              <Bell 
-                size={28} 
+              <Bell
+                size={28}
                 className="text-gray-600 hover:text-green-700 transition-colors"
               />
               {notifications.length > 0 && (
@@ -172,9 +172,9 @@ const Navbar = () => {
 
             {isNotificationOpen && (
               <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-300 p-4 z-50">
-                <h3 className="text-lg font-semibold mb-3">🔔 Notifications</h3>
+                <h3 className="text-lg font-semibold mb-3">🔔 নোটিফিকেশন</h3>
                 {notifications.length === 0 && (
-                  <p className="text-gray-500">No notifications yet!</p>
+                  <p className="text-gray-500">এখনও কোন নোটিফিকেশন নেই</p>
                 )}
                 <ul className="space-y-3 max-h-80 overflow-y-auto">
                   {notifications.map((notification, index) => (
@@ -250,19 +250,19 @@ const Navbar = () => {
                       href="/disease-detection"
                       className="block px-4 py-2 text-slate-950 hover:bg-green-100 transition-colors"
                     >
-                      Plant Disease Detection
+                      গাছের রোগ সনাক্তকরণ
                     </Link>
                     <Link
                       href="/crop-recommendation"
                       className="block px-4 py-2 text-slate-950 hover:bg-green-100 transition-colors"
                     >
-                      Crop Recommendation
+                      ফসল নির্বাচন
                     </Link>
                     <Link
                       href="/fertilizer-recommendation"
                       className="block px-4 py-2 text-slate-950 hover:bg-green-100 transition-colors"
                     >
-                      Fertilizer Recommendation
+                      সঠিক সার নির্বাচন
                     </Link>
                   </div>
                 )}

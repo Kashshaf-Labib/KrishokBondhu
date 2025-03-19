@@ -33,7 +33,7 @@ export default function ExpertConsultation() {
           className="bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg font-medium hover:bg-green-600 transition-transform transform hover:scale-105"
           onClick={() => router.push("/expert-consultation/new-post")}
         >
-          Create Post
+          পোস্ট করুন
         </motion.button>
       </motion.div>
 
