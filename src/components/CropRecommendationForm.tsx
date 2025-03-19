@@ -31,7 +31,6 @@ export default function CropRecommendationForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch districts on component mount
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
@@ -118,24 +117,21 @@ export default function CropRecommendationForm() {
   const generateReport = async () => {
     const doc = new jsPDF();
 
-    // Report Title
     doc.setFontSize(18);
-    doc.text("Crop Recommendation Report", 105, 20, { align: "center" });
+    doc.text("ফসল সুপারিশ রিপোর্ট", 105, 20, { align: "center" });
 
-    // District Information
     doc.setFontSize(12);
-    doc.text(`District: ${formData.district}`, 20, 40);
+    doc.text(`জেলা: ${formData.district}`, 20, 40);
 
-    // Environmental Parameters
-    doc.text("Environmental Parameters:", 20, 60);
+    doc.text("পরিবেশগত পরামিতিসমূহ:", 20, 60);
     const parameters = [
-      { label: "Nitrogen (N)", value: `${formData.N} %`, y: 70 },
-      { label: "Phosphorus (P)", value: `${formData.P} ug/g`, y: 80 },
-      { label: "Potassium (K)", value: `${formData.K} ug/g`, y: 90 },
-      { label: "Temperature", value: `${formData.temperature} °C`, y: 100 },
-      { label: "Humidity", value: `${formData.humidity} %`, y: 110 },
-      { label: "pH", value: formData.ph, y: 120 },
-      { label: "Rainfall", value: `${formData.rainfall} mm`, y: 130 },
+      { label: "নাইট্রোজেন (এন)", value: `${formData.N} %`, y: 70 },
+      { label: "ফসফরাস (পি)", value: `${formData.P} ug/g`, y: 80 },
+      { label: "পটাসিয়াম (কে)", value: `${formData.K} ug/g`, y: 90 },
+      { label: "তাপমাত্রা", value: `${formData.temperature} °C`, y: 100 },
+      { label: "আর্দ্রতা", value: `${formData.humidity} %`, y: 110 },
+      { label: "pH মান", value: formData.ph, y: 120 },
+      { label: "বৃষ্টিপাত", value: `${formData.rainfall} মিমি`, y: 130 },
     ];
 
     parameters.forEach((param) => {
@@ -143,21 +139,18 @@ export default function CropRecommendationForm() {
       doc.text(param.value, 100, param.y);
     });
 
-    // Recommended Crop
     doc.setFontSize(14);
-    doc.text("Recommended Crop:", 20, 150);
+    doc.text("সুপারিশকৃত ফসল:", 20, 150);
     doc.setFontSize(12);
     if (recommendation) {
       doc.text(recommendation, 30, 160);
     }
 
-    // Date of Report
     const currentDate = new Date().toLocaleDateString();
     doc.setFontSize(10);
-    doc.text(`Report Generated: ${currentDate}`, 20, 280);
+    doc.text(`রিপোর্ট তৈরির তারিখ: ${currentDate}`, 20, 280);
 
-    // Save the PDF
-    doc.save(`Crop_Recommendation_${formData.district}_${currentDate}.pdf`);
+    doc.save(`ফসল_সুপারিশ_${formData.district}_${currentDate}.pdf`);
   };
 
   return (
@@ -168,13 +161,12 @@ export default function CropRecommendationForm() {
       transition={{ duration: 0.8 }}
     >
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* District Dropdown */}
         <div>
           <label
             htmlFor="district"
             className="block text-base font-semibold text-gray-700"
           >
-            Select District:
+            জেলা নির্বাচন করুন:
           </label>
           <select
             id="district"
@@ -184,7 +176,7 @@ export default function CropRecommendationForm() {
             required
             className="mt-2 w-full border-2 border-gray-300 rounded-xl shadow-md p-4 bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            <option value="">Choose a District</option>
+            <option value="">একটি জেলা নির্বাচন করুন</option>
             {districts.map((district) => (
               <option key={district._id} value={district.district}>
                 {district.district}
@@ -194,32 +186,40 @@ export default function CropRecommendationForm() {
         </div>
 
         {[
-          { label: "Nitrogen", name: "N", placeholder: "Nitrogen Level (%)" },
-          {
-            label: "Phosphorus",
-            name: "P",
-            placeholder: "Phosphorus Level (ug/g)",
+          { 
+            label: "নাইট্রোজেন", 
+            name: "N", 
+            placeholder: "নাইট্রোজেনের পরিমাণ (%)" 
           },
-          {
-            label: "Potassium",
-            name: "K",
-            placeholder: "Potassium Level (ug/g)",
+          { 
+            label: "ফসফরাস", 
+            name: "P", 
+            placeholder: "ফসফরাসের পরিমাণ (ug/g)" 
           },
-          {
-            label: "Temperature (°C)",
-            name: "temperature",
-            placeholder: "Enter Temperature",
+          { 
+            label: "পটাসিয়াম", 
+            name: "K", 
+            placeholder: "পটাসিয়ামের পরিমাণ (ug/g)" 
           },
-          {
-            label: "Humidity",
-            name: "humidity",
-            placeholder: "Enter Humidity",
+          { 
+            label: "তাপমাত্রা (°C)", 
+            name: "temperature", 
+            placeholder: "তাপমাত্রা ইনপুট করুন" 
           },
-          { label: "pH", name: "ph", placeholder: "Enter pH" },
-          {
-            label: "Rainfall (mm)",
-            name: "rainfall",
-            placeholder: "Average Rainfall (mm)",
+          { 
+            label: "আর্দ্রতা", 
+            name: "humidity", 
+            placeholder: "আর্দ্রতা ইনপুট করুন" 
+          },
+          { 
+            label: "pH মান", 
+            name: "ph", 
+            placeholder: "pH মান ইনপুট করুন" 
+          },
+          { 
+            label: "বৃষ্টিপাত (মিমি)", 
+            name: "rainfall", 
+            placeholder: "গড় বৃষ্টিপাত (মিমি)" 
           },
         ].map((field) => (
           <div key={field.name}>
@@ -250,7 +250,7 @@ export default function CropRecommendationForm() {
           whileTap={{ scale: 0.95 }}
           disabled={loading}
         >
-          {loading ? "Loading..." : "Get Crop Recommendation"}
+          {loading ? "লোড হচ্ছে..." : "ফসল সুপারিশ পান"}
         </motion.button>
       </form>
 
@@ -262,19 +262,17 @@ export default function CropRecommendationForm() {
           transition={{ duration: 0.5 }}
         >
           <div>
-            <h3 className="font-bold text-lg">Recommended Crop:</h3>
+            <h3 className="font-bold text-lg">সুপারিশকৃত ফসল:</h3>
             <p className="mt-1 text-lg">{recommendation}</p>
           </div>
           <p className="mt-4 text-sm text-gray-600">
-            For a detailed report, please download the recommendation as a PDF
-            by clicking{" "}
+            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে {" "}
             <span
               onClick={generateReport}
               className="text-blue-600 underline cursor-pointer hover:text-blue-800"
             >
-              here
+              এখানে ক্লিক করুন
             </span>
-            .
           </p>
         </motion.div>
       )}
@@ -286,7 +284,7 @@ export default function CropRecommendationForm() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <h3 className="font-bold text-lg">Error:</h3>
+          <h3 className="font-bold text-lg">ত্রুটি:</h3>
           <p className="mt-1">{error}</p>
         </motion.div>
       )}
