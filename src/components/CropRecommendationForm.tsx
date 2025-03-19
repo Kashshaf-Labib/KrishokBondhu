@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+
 
 interface District {
   _id: string;
@@ -186,40 +186,40 @@ export default function CropRecommendationForm() {
         </div>
 
         {[
-          { 
-            label: "নাইট্রোজেন", 
-            name: "N", 
-            placeholder: "নাইট্রোজেনের পরিমাণ (%)" 
+          {
+            label: "নাইট্রোজেন",
+            name: "N",
+            placeholder: "নাইট্রোজেনের পরিমাণ (%)",
           },
-          { 
-            label: "ফসফরাস", 
-            name: "P", 
-            placeholder: "ফসফরাসের পরিমাণ (ug/g)" 
+          {
+            label: "ফসফরাস",
+            name: "P",
+            placeholder: "ফসফরাসের পরিমাণ (ug/g)",
           },
-          { 
-            label: "পটাসিয়াম", 
-            name: "K", 
-            placeholder: "পটাসিয়ামের পরিমাণ (ug/g)" 
+          {
+            label: "পটাসিয়াম",
+            name: "K",
+            placeholder: "পটাসিয়ামের পরিমাণ (ug/g)",
           },
-          { 
-            label: "তাপমাত্রা (°C)", 
-            name: "temperature", 
-            placeholder: "তাপমাত্রা ইনপুট করুন" 
+          {
+            label: "তাপমাত্রা (°C)",
+            name: "temperature",
+            placeholder: "তাপমাত্রা ইনপুট করুন",
           },
-          { 
-            label: "আর্দ্রতা", 
-            name: "humidity", 
-            placeholder: "আর্দ্রতা ইনপুট করুন" 
+          {
+            label: "আর্দ্রতা",
+            name: "humidity",
+            placeholder: "আর্দ্রতা ইনপুট করুন",
           },
-          { 
-            label: "pH মান", 
-            name: "ph", 
-            placeholder: "pH মান ইনপুট করুন" 
+          {
+            label: "pH মান",
+            name: "ph",
+            placeholder: "pH মান ইনপুট করুন",
           },
-          { 
-            label: "বৃষ্টিপাত (মিমি)", 
-            name: "rainfall", 
-            placeholder: "গড় বৃষ্টিপাত (মিমি)" 
+          {
+            label: "বৃষ্টিপাত (মিমি)",
+            name: "rainfall",
+            placeholder: "গড় বৃষ্টিপাত (মিমি)",
           },
         ].map((field) => (
           <div key={field.name}>
@@ -266,7 +266,7 @@ export default function CropRecommendationForm() {
             <p className="mt-1 text-lg">{recommendation}</p>
           </div>
           <p className="mt-4 text-sm text-gray-600">
-            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে {" "}
+            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে{" "}
             <span
               onClick={generateReport}
               className="text-blue-600 underline cursor-pointer hover:text-blue-800"

@@ -13,30 +13,31 @@ import { Pagination, Autoplay } from "swiper/modules";
 
 const features = [
   {
-    title: "Plant Disease Detection",
+    title: "উদ্ভিদ রোগ সনাক্তকরণ",
     description:
-      "Upload plant images for detailed disease analysis, enabling early detection and prevention. Get specific insights and suggestions for timely action to mitigate crop loss.",
+      "উদ্ভিদের ছবি আপলোড করে বিস্তারিত রোগ বিশ্লেষণ করুন। প্রাথমিক সনাক্তকরণ ও প্রতিরোধের মাধ্যমে ফসলের ক্ষতি কমিয়ে আনুন। সময়মতো ব্যবস্থা নেওয়ার জন্য নির্দিষ্ট সমাধান ও পরামর্শ পান।",
     image: "/disease-detection.jpeg",
   },
   {
-    title: "Plant Recommendation Based on Soil Information",
+    title: "মাটির তথ্যের ভিত্তিতে ফসল সুপারিশ",
     description:
-      "Leverage soil data such as pH and nutrient levels to identify the best crops for your land. This leads to optimized land use, better yields, and sustainable farming.",
+      "মাটির pH মান ও পুষ্টি স্তরের তথ্য ব্যবহার করে আপনার জমির জন্য সর্বোত্তম ফসল নির্বাচন করুন। এটি জমির সর্বোত্তম ব্যবহার, উন্নত ফলন ও টেকসই চাষাবাদ নিশ্চিত করে।",
     image: "/soil-suggestion.jpeg",
   },
   {
-    title: "Fertilizer Recommendation",
+    title: "সার সুপারিশ",
     description:
-      "Receive precise fertilizer suggestions based on crop and soil conditions, ensuring proper growth while cutting unnecessary fertilizer expenses.",
+      "ফসল ও মাটির অবস্থা অনুযায়ী সঠিক সারের পরামর্শ পান। ফসলের সঠিক বৃদ্ধি নিশ্চিত করার পাশাপাশি অপ্রয়োজনীয় সার ব্যয় কমিয়ে আনুন।",
     image: "/fertilizer-suggestion.png",
   },
   {
-    title: "Expert Consultation",
+    title: "বিশেষজ্ঞ পরামর্শ",
     description:
-      "Access expert advice to make informed decisions on crop management and cultivation practices for better outcomes.",
+      "কৃষি বিশেষজ্ঞদের পরামর্শ পান এবং উন্নত ফলনের জন্য ফসল ব্যবস্থাপনা ও চাষাবাদ সম্পর্কে সঠিক সিদ্ধান্ত নিন।",
     image: "/expert-consultation.png",
   },
 ];
+
 
 const FeatureSlider = () => {
   return (
@@ -72,8 +73,3 @@ const FeatureSlider = () => {
 };
 
 export default FeatureSlider;
-
-
-
-
-

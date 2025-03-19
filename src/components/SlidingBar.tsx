@@ -14,28 +14,28 @@ const SlidingBar = () => {
     <div className={styles.slidingBar}>
       <div className={styles.slidingBarContent}>
         <div className={styles.slidingItem}>
-          <img src={plantDiseaseIcon} alt="Pest Control" />
-          Plant Disease Detection
+          <img src={plantDiseaseIcon} alt="উদ্ভিদ রোগ সনাক্তকরণ" />
+          উদ্ভিদ রোগ সনাক্তকরণ
         </div>
         <div className={styles.slidingItem}>
-          <img src={fertilizerSuggestionIcon} alt="Vertical Farming" />
-          Fertilizer Suggestion
+          <img src={fertilizerSuggestionIcon} alt="সার সুপারিশ" />
+          সার সুপারিশ
         </div>
         <div className={styles.slidingItem}>
-          <img src={soilSuggestionIcon} alt="Fertilizer" />
-          Soil Recommendation
+          <img src={soilSuggestionIcon} alt="মাটি সুপারিশ" />
+          মাটি সুপারিশ
         </div>
         <div className={styles.slidingItem}>
-          <img src={expertConsultIcon} alt="Urban Agriculture" />
-          Expert Consultation
+          <img src={expertConsultIcon} alt="বিশেষজ্ঞ পরামর্শ" />
+          বিশেষজ্ঞ পরামর্শ
         </div>
         <div className={styles.slidingItem}>
-          <img src={pestControlIcon} alt="Pest Control" />
-          Pest Control
+          <img src={pestControlIcon} alt="পোকা নিয়ন্ত্রণ" />
+          পোকা নিয়ন্ত্রণ
         </div>
         <div className={styles.slidingItem}>
-          <img src={verticalFarmingIcon} alt="Vertical Farming" />
-          Vertical Farming Solutions
+          <img src={verticalFarmingIcon} alt="উল্লম্ব চাষাবাদ সমাধান" />
+          ভার্টিক্যাল চাষাবাদ সমাধান
         </div>
       </div>
     </div>

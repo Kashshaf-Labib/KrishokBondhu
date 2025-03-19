@@ -26,10 +26,9 @@ const Footer = () => {
       <div className={styles.footerContainer}>
         {/* Punchline Section */}
         <motion.div className={styles.punchline} whileHover={{ scale: 1.1 }}>
-          <h3>Nurturing Agriculture with Intelligence</h3>
+          <h3>বুদ্ধিমত্তার মাধ্যমে কৃষির লালন</h3>
           <p>
-            Empowering farmers with AI-driven solutions for a sustainable
-            future.
+            টেকসই ভবিষ্যতের জন্য কৃষকদের এআই-চালিত সমাধান সহায়তা প্রদান
           </p>
         </motion.div>
 
@@ -44,34 +43,34 @@ const Footer = () => {
             target="_blank"
             whileHover={{ scale: 1.2 }}
           >
-            <img src="/facebook.svg" alt="Facebook" />
+            <img src="/facebook.svg" alt="ফেসবুক" />
           </motion.a>
           <motion.a
             href="https://www.instagram.com"
             target="_blank"
             whileHover={{ scale: 1.2 }}
           >
-            <img src="/instagram.svg" alt="Instagram" />
+            <img src="/instagram.svg" alt="ইনস্টাগ্রাম" />
           </motion.a>
           <motion.a
             href="https://www.twitter.com"
             target="_blank"
             whileHover={{ scale: 1.2 }}
           >
-            <img src="/twitter.svg" alt="Twitter" />
+            <img src="/twitter.svg" alt="টুইটার" />
           </motion.a>
           <motion.a
             href="https://www.youtube.com"
             target="_blank"
             whileHover={{ scale: 1.2 }}
           >
-            <img src="/youtube.svg" alt="YouTube" />
+            <img src="/youtube.svg" alt="ইউটিউব" />
           </motion.a>
         </motion.div>
 
         {/* Copyright Info */}
         <motion.div className={styles.copyright}>
-          <p>© 2024 KrishokBondhu. All rights reserved.</p>
+          <p>© 2024 Krishokbondhu. All Rights Reserved</p>
         </motion.div>
       </div>
     </motion.footer>

@@ -37,9 +37,9 @@ const NotificationListener: React.FC<{ userId: string }> = ({ userId }) => {
 
   return (
     <div className="fixed bottom-6 right-6 w-96 bg-white rounded-lg shadow-lg border border-gray-300 p-4 z-50">
-      <h3 className="text-lg font-semibold mb-3">🔔 Notifications</h3>
+      <h3 className="text-lg font-semibold mb-3">🔔 নোটিফিকেশন</h3>
       {notifications.length === 0 && (
-        <p className="text-gray-500">No notifications yet!</p>
+        <p className="text-gray-500">কোনো নোটিফিকেশন পাওয়া যায়নি</p>
       )}
       <ul className="space-y-3">
         {notifications.map((notification, index) => (
@@ -48,7 +48,7 @@ const NotificationListener: React.FC<{ userId: string }> = ({ userId }) => {
             className="p-3 bg-gray-100 rounded-lg shadow-sm border border-gray-200"
           >
             <p className="font-semibold text-green-700">
-              {notification.expertName} commented on your post!
+              {notification.expertName} আপনার পোস্টে মন্তব্য করেছেন
             </p>
             <p className="text-gray-700">{notification.content}</p>
             <p className="text-sm text-gray-400">

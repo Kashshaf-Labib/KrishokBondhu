@@ -94,7 +94,7 @@ const ExpertAdviceModal: React.FC<ExpertAdviceModalProps> = ({
 
         {/* Advice Section */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Expert Advices</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">বিশেষজ্ঞ পরামর্শসমূহ</h3>
           {advices.length > 0 ? (
             <div className="space-y-4">
               {advices.map((advice) => (
@@ -120,7 +120,7 @@ const ExpertAdviceModal: React.FC<ExpertAdviceModalProps> = ({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500">No advices yet. Be the first expert to contribute!</p>
+            <p className="text-sm text-gray-500">এখনও কোনো পরামর্শ নেই। প্রথম বিশেষজ্ঞ হিসেবে আপনার পরামর্শ যোগ করুন!</p>
           )}
         </div>
 
@@ -130,7 +130,7 @@ const ExpertAdviceModal: React.FC<ExpertAdviceModalProps> = ({
             <textarea
               className="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
               rows={3}
-              placeholder="Add your advice..."
+              placeholder="আপনার পরামর্শ লিখুন..."
               value={newAdvice}
               onChange={(e) => setNewAdvice(e.target.value)}
             />
@@ -144,7 +144,7 @@ const ExpertAdviceModal: React.FC<ExpertAdviceModalProps> = ({
                 onClick={handleAddAdvice}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit Advice"}
+                {isSubmitting ? "জমা হচ্ছে..." : "পরামর্শ জমা দিন"}
               </button>
             </div>
           </div>
