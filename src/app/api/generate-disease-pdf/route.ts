@@ -56,6 +56,12 @@ export async function POST(request: NextRequest) {
       doc.moveDown(1);
     }
 
+    // Footer
+    const currentDate = new Date().toLocaleDateString();
+    doc
+      .fontSize(10)
+      .text(`রিপোর্ট তৈরির তারিখ: ${currentDate}`, { align: "center" });
+
 
     // Finalize PDF
     doc.end();
