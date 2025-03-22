@@ -6,34 +6,34 @@ import styles from "../app/styles/FAQ.module.css";
 
 const faqData = [
   {
-    question: "What is this platform, and how can it help me as a farmer?",
+    question: "এই প্ল্যাটফর্মটি কী এবং এটি কৃষক হিসেবে আমাকে কীভাবে সাহায্য করবে?",
     answer:
-      "This platform provides AI-powered tools to help farmers detect plant diseases, recommend crops based on soil data, suggest the right fertilizers, and offer expert consultations to optimize farming practices.",
+      "এই প্ল্যাটফর্মে এআই-চালিত সরঞ্জাম রয়েছে যা উদ্ভিদ রোগ সনাক্তকরণ, মাটির তথ্যের ভিত্তিতে ফসল সুপারিশ, সঠিক সার নির্বাচন এবং বিশেষজ্ঞ পরামর্শ প্রদান করে কৃষি পদ্ধতি উন্নত করতে সাহায্য করে।",
   },
   {
-    question: "How do I upload an image to detect plant diseases?",
+    question: "উদ্ভিদ রোগ সনাক্ত করতে কীভাবে ছবি আপলোড করব?",
     answer:
-      "After logging in, go to the “Plant Disease Detection” section, and upload a clear image of the affected plant. The system will analyze the image and provide detailed results.",
+      "লগইন করার পর 'উদ্ভিদ রোগ সনাক্তকরণ' বিভাগে গিয়ে আক্রান্ত গাছের স্পষ্ট ছবি আপলোড করুন। সিস্টেম ছবি বিশ্লেষণ করে বিস্তারিত ফলাফল প্রদর্শন করবে।",
   },
   {
-    question: "What kind of soil data is required for crop recommendations?",
+    question: "ফসল সুপারিশের জন্য কী ধরনের মাটির তথ্য প্রয়োজন?",
     answer:
-      "You need to input basic soil parameters like pH level, nitrogen, phosphorus, and potassium levels. The platform will then suggest the best crops suited for your land.",
+      "আপনাকে মাটির pH মান, নাইট্রোজেন, ফসফরাস এবং পটাসিয়ামের মাত্রার মতো মৌলিক পরামিতিগুলো ইনপুট দিতে হবে। প্ল্যাটফর্ম আপনার জমির জন্য উপযুক্ত সেরা ফসল সুপারিশ করবে।",
   },
   {
-    question: "How accurate are the crop and fertilizer recommendations?",
+    question: "ফসল ও সার সুপারিশের নির্ভুলতা কতটা?",
     answer:
-      "The recommendations are based on extensive datasets and machine learning algorithms. While highly accurate, it’s advised to consult an expert if you have specific concerns.",
+      "সুপারিশসমূহ বড় ডেটাসেট এবং মেশিন লার্নিং অ্যালগরিদমের ভিত্তিতে তৈরি। অত্যন্ত নির্ভুল হলেও বিশেষ উদ্বেগ থাকলে বিশেষজ্ঞের পরামর্শ নেওয়া উচিত।",
   },
   {
-    question: "How do I consult an agricultural expert on the platform?",
+    question: "প্ল্যাটফর্মে কৃষি বিশেষজ্ঞের সাথে কীভাবে পরামর্শ করব?",
     answer:
-      "To consult with an expert, go to the 'Expert Consultation' section and chat with an expert. You can either ask questions directly or share images for advice.",
+      "বিশেষজ্ঞ পরামর্শের জন্য 'বিশেষজ্ঞ পরামর্শ' বিভাগে গিয়ে সরাসরি চ্যাট করুন। আপনি প্রশ্ন জিজ্ঞাসা করতে পারেন বা পরামর্শের জন্য ছবি শেয়ার করতে পারেন।",
   },
   {
-    question: "Will there be more features added to the platform?",
+    question: "ভবিষ্যতে প্ল্যাটফর্মে আরো ফিচার যোগ হবে কি?",
     answer:
-      "Yes, we are continuously working to add more features, such as pest detection, yield prediction, and integration with smart farming tools.",
+      "হ্যাঁ, আমরা ক্রমাগত নতুন ফিচার যোগ করছি যেমন পোকা সনাক্তকরণ, ফলন পূর্বাভাস এবং স্মার্ট ফার্মিং সরঞ্জামের সাথে ইন্টিগ্রেশন।",
   },
 ];
 
@@ -53,7 +53,7 @@ const FAQ = () => {
     >
       <div className={styles.faqContainer}>
         <div className={styles.imageContainer}>
-          <img src="/FAQ.png" alt="FAQ" className={styles.faqImage} />
+          <img src="/FAQ.png" alt="জিজ্ঞাসিত প্রশ্ন" className={styles.faqImage} />
         </div>
         <motion.div
           className={styles.faqContent}
@@ -61,7 +61,7 @@ const FAQ = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delayChildren: 0.3, staggerChildren: 0.2 }}
         >
-          <h2 className={styles.title}>Frequently Asked Questions</h2>
+          <h2 className={styles.title}>সচরাচর জিজ্ঞাসিত প্রশ্নাবলী</h2>
           {faqData.map((item, index) => (
             <motion.div
               key={index}
