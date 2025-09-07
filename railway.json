@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "plantdisease_detection_api/Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "cd plantdisease_detection_api && uvicorn main:app --host 0.0.0.0 --port $PORT",
+    "healthcheckPath": "/health"
+  }
+}

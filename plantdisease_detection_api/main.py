@@ -8,7 +8,7 @@ import uvicorn
 import logging
 import os
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 import pickle
 from datetime import datetime, timedelta
 import json
@@ -26,7 +26,7 @@ def get_llm_response(query: str) -> str:
 
 
 class QueryRequest(BaseModel):
-    query: str = Field(..., example="Give me prevention methods for tomato mosaic disease")
+    query: str
 
 
 class QueryResponse(BaseModel):
@@ -87,7 +87,7 @@ try:
     FERTILIZER_MODEL = tf.keras.models.load_model(fertilizer_model_path)
     logger.info("Fertilizer recommendation model loaded successfully")
 except Exception as e:
-    logger.error(f"Error loading fertilizer model: {e}")
+    logger.warning(f"Fertilizer model not found: {e}. Fertilizer recommendation will be disabled.")
     FERTILIZER_MODEL = None
 
 class FertilizerRecommendationRequest(BaseModel):
@@ -306,5 +306,10 @@ def chat_message(request: ChatMessage):
             "content": "দুঃখিত, একটি ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
         }
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
