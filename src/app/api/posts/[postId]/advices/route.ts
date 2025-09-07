@@ -12,9 +12,9 @@ connectDB();
 
 export async function GET(
   request: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const { postId } = await params;
 
   if (!mongoose.Types.ObjectId.isValid(postId)) {
     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
@@ -85,9 +85,9 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const { postId } = await params;
 
   if (!mongoose.Types.ObjectId.isValid(postId)) {
     return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });

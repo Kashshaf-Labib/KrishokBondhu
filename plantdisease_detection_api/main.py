@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 import pickle
 from datetime import datetime, timedelta
+import json
 
 # app/services.py
 from langchain_groq import ChatGroq
@@ -42,6 +43,9 @@ class Settings:
 
 
 settings = Settings()
+
+if not settings.groq_api_key:
+    raise RuntimeError("GROQ_API_KEY environment variable is not set. Please set it in your .env file or environment.")
 
 llm = ChatGroq(
     model=settings.model_name,

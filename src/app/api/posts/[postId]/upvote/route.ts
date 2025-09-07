@@ -5,9 +5,9 @@ import { connectDB } from "@/db/config";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const { postId } = await params;
 
 
   if (!postId || postId === "undefined") {
