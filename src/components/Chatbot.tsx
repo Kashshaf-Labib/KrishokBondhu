@@ -22,6 +22,11 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
+      console.log('Sending request to:', `${
+        process.env.NEXT_PUBLIC_API_URL ||
+        'https://krishok-bondhu-backend-1.onrender.com'
+      }/message`);
+      
       const response = await axios.post(
         `${
           process.env.NEXT_PUBLIC_API_URL ||
@@ -30,12 +35,23 @@ const Chatbot = () => {
         {
           message: userInput,
         },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 30000, // 30 second timeout
+        }
       );
 
-      console.log('Backend response:', response.data); // Debug log
+      console.log('Full response object:', response);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      console.log('Response data:', response.data);
+      console.log('Response data type:', typeof response.data);
+      console.log('Response data keys:', Object.keys(response.data || {}));
 
-      // Add bot response to chat
-      if (response.data && typeof response.data.content === 'string') {
+      // Check if response.data exists and has content
+      if (response.data && response.data.content && typeof response.data.content === 'string' && response.data.content.trim() !== '') {
         setChatLog(prev => [
           ...prev,
           {
@@ -44,8 +60,28 @@ const Chatbot = () => {
           },
         ]);
       } else {
-        console.error('Invalid response format:', response.data);
-        throw new Error('Invalid response format - content field missing or not a string');
+        console.error('Invalid response format or empty content:', response.data);
+        
+        // Try to show a helpful error message
+        let errorMessage = 'দুঃখিত, সার্ভার থেকে সঠিক উত্তর পাওয়া যায়নি।';
+        
+        if (!response.data) {
+          errorMessage = 'দুঃখিত, সার্ভার থেকে কোন উত্তর পাওয়া যায়নি।';
+        } else if (!response.data.content) {
+          errorMessage = 'দুঃখিত, সার্ভারের উত্তরে content field নেই।';
+        } else if (typeof response.data.content !== 'string') {
+          errorMessage = 'দুঃখিত, সার্ভারের উত্তর সঠিক ফরম্যাটে নেই।';
+        } else if (response.data.content.trim() === '') {
+          errorMessage = 'দুঃখিত, সার্ভার থেকে খালি উত্তর এসেছে।';
+        }
+        
+        setChatLog(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            message: errorMessage,
+          },
+        ]);
       }
     } catch (error) {
       console.error('Chat error:', error);
@@ -56,19 +92,46 @@ const Chatbot = () => {
           message: error.message,
           response: error.response?.data,
           status: error.response?.status,
-          statusText: error.response?.statusText
+          statusText: error.response?.statusText,
+          config: error.config
         });
+        
+        // Check if it's a CORS error
+        if (error.code === 'ERR_NETWORK' || error.message.includes('CORS')) {
+          setChatLog(prev => [
+            ...prev,
+            {
+              sender: 'bot',
+              message: 'দুঃখিত, নেটওয়ার্ক সমস্যার কারণে সংযোগ স্থাপন করা যাচ্ছে না। CORS সমস্যা হতে পারে।',
+            },
+          ]);
+        } else if (error.response?.status === 500) {
+          setChatLog(prev => [
+            ...prev,
+            {
+              sender: 'bot',
+              message: 'দুঃখিত, সার্ভারে একটি সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।',
+            },
+          ]);
+        } else {
+          setChatLog(prev => [
+            ...prev,
+            {
+              sender: 'bot',
+              message: `দুঃখিত, একটি ত্রুটি হয়েছে (${error.response?.status || 'Unknown'}): ${error.message}`,
+            },
+          ]);
+        }
       } else {
         console.error('Non-axios error:', error instanceof Error ? error.message : 'Unknown error');
+        setChatLog(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            message: 'দুঃখিত, একটি অজানা ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।',
+          },
+        ]);
       }
-      
-      setChatLog(prev => [
-        ...prev,
-        {
-          sender: 'bot',
-          message: 'দুঃখিত, একটি ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।',
-        },
-      ]);
     } finally {
       setIsLoading(false);
       setUserInput('');
