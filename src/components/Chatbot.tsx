@@ -51,12 +51,12 @@ const Chatbot = () => {
       console.log('Response data keys:', Object.keys(response.data || {}));
 
       // Check if response.data exists and has content
-      if (response.data && response.data.content && typeof response.data.content === 'string' && response.data.content.trim() !== '') {
+      if (response.data && response.data.response && typeof response.data.response === 'string' && response.data.response.trim() !== '') {
         setChatLog(prev => [
           ...prev,
           {
             sender: 'bot',
-            message: response.data.content,
+            message: response.data.response,
           },
         ]);
       } else {
@@ -67,11 +67,11 @@ const Chatbot = () => {
         
         if (!response.data) {
           errorMessage = 'দুঃখিত, সার্ভার থেকে কোন উত্তর পাওয়া যায়নি।';
-        } else if (!response.data.content) {
-          errorMessage = 'দুঃখিত, সার্ভারের উত্তরে content field নেই।';
-        } else if (typeof response.data.content !== 'string') {
+        } else if (!response.data.response) {
+          errorMessage = 'দুঃখিত, সার্ভারের উত্তরে response field নেই।';
+        } else if (typeof response.data.response !== 'string') {
           errorMessage = 'দুঃখিত, সার্ভারের উত্তর সঠিক ফরম্যাটে নেই।';
-        } else if (response.data.content.trim() === '') {
+        } else if (response.data.response.trim() === '') {
           errorMessage = 'দুঃখিত, সার্ভার থেকে খালি উত্তর এসেছে।';
         }
         
