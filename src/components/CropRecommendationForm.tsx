@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 interface District {
   _id: string;
@@ -16,14 +16,14 @@ interface District {
 export default function CropRecommendationForm() {
   const [districts, setDistricts] = useState<District[]>([]);
   const [formData, setFormData] = useState({
-    district: "",
-    N: "",
-    P: "",
-    K: "",
-    temperature: "",
-    humidity: "",
-    ph: "",
-    rainfall: "",
+    district: '',
+    N: '',
+    P: '',
+    K: '',
+    temperature: '',
+    humidity: '',
+    ph: '',
+    rainfall: '',
   });
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,7 @@ export default function CropRecommendationForm() {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("/api/districts");
+        const response = await fetch('/api/districts');
         if (!response.ok) throw new Error(`Error: ${response.status}`);
         const data = await response.json();
         setDistricts(data);
@@ -45,7 +45,7 @@ export default function CropRecommendationForm() {
 
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDistrict = districts.find(
-      (district) => district.district === e.target.value
+      district => district.district === e.target.value,
     );
 
     if (selectedDistrict) {
@@ -61,11 +61,11 @@ export default function CropRecommendationForm() {
     } else {
       setFormData({
         ...formData,
-        district: "",
-        N: "",
-        P: "",
-        K: "",
-        rainfall: "",
+        district: '',
+        N: '',
+        P: '',
+        K: '',
+        rainfall: '',
       });
     }
   };
@@ -81,20 +81,26 @@ export default function CropRecommendationForm() {
     setRecommendation(null);
 
     try {
-      const response = await fetch("http://localhost:8000/recommendcrop", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          district: formData.district,
-          N: parseFloat(formData.N),
-          P: parseFloat(formData.P),
-          K: parseFloat(formData.K),
-          temperature: parseFloat(formData.temperature),
-          humidity: parseFloat(formData.humidity),
-          ph: parseFloat(formData.ph),
-          rainfall: parseFloat(formData.rainfall),
-        }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          'https://krishok-bondhu-backend-1.onrender.com'
+        }/recommendcrop`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            district: formData.district,
+            N: parseFloat(formData.N),
+            P: parseFloat(formData.P),
+            K: parseFloat(formData.K),
+            temperature: parseFloat(formData.temperature),
+            humidity: parseFloat(formData.humidity),
+            ph: parseFloat(formData.ph),
+            rainfall: parseFloat(formData.rainfall),
+          }),
+        },
+      );
 
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
@@ -108,17 +114,17 @@ export default function CropRecommendationForm() {
 
   const generateReport = async () => {
     try {
-      const response = await fetch("/api/generate-crop-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/generate-crop-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formData, recommendation }),
       });
 
-      if (!response.ok) throw new Error("Failed to generate PDF");
+      if (!response.ok) throw new Error('Failed to generate PDF');
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = `ফসল_সুপারিশ_${formData.district}.pdf`;
       document.body.appendChild(a);
@@ -126,8 +132,8 @@ export default function CropRecommendationForm() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (err) {
-      console.error("PDF generation error:", err);
-      setError("PDF জেনারেট করতে সমস্যা হয়েছে");
+      console.error('PDF generation error:', err);
+      setError('PDF জেনারেট করতে সমস্যা হয়েছে');
     }
   };
 
@@ -141,7 +147,10 @@ export default function CropRecommendationForm() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* District Selector */}
         <div>
-          <label htmlFor="district" className="block text-base font-semibold text-gray-700">
+          <label
+            htmlFor="district"
+            className="block text-base font-semibold text-gray-700"
+          >
             জেলা নির্বাচন করুন:
           </label>
           <select
@@ -153,7 +162,7 @@ export default function CropRecommendationForm() {
             className="mt-2 w-full border-2 border-gray-300 rounded-xl shadow-md p-4 bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="">একটি জেলা নির্বাচন করুন</option>
-            {districts.map((district) => (
+            {districts.map(district => (
               <option key={district._id} value={district.district}>
                 {district.district}
               </option>
@@ -163,16 +172,39 @@ export default function CropRecommendationForm() {
 
         {/* Form Fields */}
         {[
-          { label: "নাইট্রোজেন", name: "N", placeholder: "নাইট্রোজেনের পরিমাণ (%)" },
-          { label: "ফসফরাস", name: "P", placeholder: "ফসফরাসের পরিমাণ (ug/g)" },
-          { label: "পটাসিয়াম", name: "K", placeholder: "পটাসিয়ামের পরিমাণ (ug/g)" },
-          { label: "তাপমাত্রা (°C)", name: "temperature", placeholder: "তাপমাত্রা ইনপুট করুন" },
-          { label: "আর্দ্রতা", name: "humidity", placeholder: "আর্দ্রতা ইনপুট করুন" },
-          { label: "pH মান", name: "ph", placeholder: "pH মান ইনপুট করুন" },
-          { label: "বৃষ্টিপাত (মিমি)", name: "rainfall", placeholder: "গড় বৃষ্টিপাত (মিমি)" },
-        ].map((field) => (
+          {
+            label: 'নাইট্রোজেন',
+            name: 'N',
+            placeholder: 'নাইট্রোজেনের পরিমাণ (%)',
+          },
+          { label: 'ফসফরাস', name: 'P', placeholder: 'ফসফরাসের পরিমাণ (ug/g)' },
+          {
+            label: 'পটাসিয়াম',
+            name: 'K',
+            placeholder: 'পটাসিয়ামের পরিমাণ (ug/g)',
+          },
+          {
+            label: 'তাপমাত্রা (°C)',
+            name: 'temperature',
+            placeholder: 'তাপমাত্রা ইনপুট করুন',
+          },
+          {
+            label: 'আর্দ্রতা',
+            name: 'humidity',
+            placeholder: 'আর্দ্রতা ইনপুট করুন',
+          },
+          { label: 'pH মান', name: 'ph', placeholder: 'pH মান ইনপুট করুন' },
+          {
+            label: 'বৃষ্টিপাত (মিমি)',
+            name: 'rainfall',
+            placeholder: 'গড় বৃষ্টিপাত (মিমি)',
+          },
+        ].map(field => (
           <div key={field.name}>
-            <label htmlFor={field.name} className="block text-lg font-semibold text-gray-700">
+            <label
+              htmlFor={field.name}
+              className="block text-lg font-semibold text-gray-700"
+            >
               {field.label}:
             </label>
             <input
@@ -197,7 +229,7 @@ export default function CropRecommendationForm() {
           whileTap={{ scale: 0.95 }}
           disabled={loading}
         >
-          {loading ? "লোড হচ্ছে..." : "ফসল সুপারিশ পান"}
+          {loading ? 'লোড হচ্ছে...' : 'ফসল সুপারিশ পান'}
         </motion.button>
       </form>
 
@@ -214,7 +246,7 @@ export default function CropRecommendationForm() {
             <p className="mt-1 text-lg">{recommendation}</p>
           </div>
           <p className="mt-4 text-sm text-gray-600">
-            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে{" "}
+            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে{' '}
             <span
               onClick={generateReport}
               className="text-blue-600 underline cursor-pointer hover:text-blue-800"

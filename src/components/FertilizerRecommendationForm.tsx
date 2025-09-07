@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 interface District {
   _id: string;
@@ -14,32 +14,32 @@ interface District {
 }
 
 const soilTypes = [
-  { id: 1, name: "বালুময়" },
-  { id: 2, name: "দোআঁশ" },
-  { id: 3, name: "কাদামাটি" },
-  { id: 4, name: "পলি" },
+  { id: 1, name: 'বালুময়' },
+  { id: 2, name: 'দোআঁশ' },
+  { id: 3, name: 'কাদামাটি' },
+  { id: 4, name: 'পলি' },
 ];
 
 const cropTypes = [
-  { id: 1, name: "ধান" },
-  { id: 2, name: "গম" },
-  { id: 3, name: "ভুট্টা" },
-  { id: 4, name: "তুলা" },
+  { id: 1, name: 'ধান' },
+  { id: 2, name: 'গম' },
+  { id: 3, name: 'ভুট্টা' },
+  { id: 4, name: 'তুলা' },
 ];
 
 export default function FertilizerRecommendationForm() {
   const [districts, setDistricts] = useState<District[]>([]);
   const [formData, setFormData] = useState({
-    district: "",
-    N: "",
-    P: "",
-    K: "",
-    temperature: "",
-    humidity: "",
-    ph: "",
-    rainfall: "",
-    soil_type: "",
-    crop_type: "",
+    district: '',
+    N: '',
+    P: '',
+    K: '',
+    temperature: '',
+    humidity: '',
+    ph: '',
+    rainfall: '',
+    soil_type: '',
+    crop_type: '',
   });
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ export default function FertilizerRecommendationForm() {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("/api/districts");
+        const response = await fetch('/api/districts');
         if (!response.ok) throw new Error(`ত্রুটি: ${response.status}`);
         const data = await response.json();
         setDistricts(data);
@@ -61,7 +61,7 @@ export default function FertilizerRecommendationForm() {
 
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDistrict = districts.find(
-      (district) => district.district === e.target.value
+      district => district.district === e.target.value,
     );
 
     if (selectedDistrict) {
@@ -77,17 +77,17 @@ export default function FertilizerRecommendationForm() {
     } else {
       setFormData({
         ...formData,
-        district: "",
-        N: "",
-        P: "",
-        K: "",
-        rainfall: "",
+        district: '',
+        N: '',
+        P: '',
+        K: '',
+        rainfall: '',
       });
     }
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -100,10 +100,13 @@ export default function FertilizerRecommendationForm() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/recommendfertilizer",
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          'https://krishok-bondhu-backend-1.onrender.com'
+        }/recommendfertilizer`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             temperature: parseFloat(formData.temperature),
             humidity: parseFloat(formData.humidity),
@@ -114,7 +117,7 @@ export default function FertilizerRecommendationForm() {
             potassium: parseFloat(formData.K),
             phosphorous: parseFloat(formData.P),
           }),
-        }
+        },
       );
 
       if (!response.ok) throw new Error(`ত্রুটি: ${response.status}`);
@@ -129,17 +132,17 @@ export default function FertilizerRecommendationForm() {
 
   const generateReport = async () => {
     try {
-      const response = await fetch("/api/generate-fertilizer-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/generate-fertilizer-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formData, recommendation }),
       });
 
-      if (!response.ok) throw new Error("PDF generation failed");
+      if (!response.ok) throw new Error('PDF generation failed');
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = `সার_সুপারিশ_${formData.district}.pdf`;
       document.body.appendChild(a);
@@ -147,8 +150,8 @@ export default function FertilizerRecommendationForm() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (err) {
-      console.error("PDF generation error:", err);
-      setError("PDF জেনারেট করতে সমস্যা হয়েছে");
+      console.error('PDF generation error:', err);
+      setError('PDF জেনারেট করতে সমস্যা হয়েছে');
     }
   };
 
@@ -177,7 +180,7 @@ export default function FertilizerRecommendationForm() {
             className="mt-2 w-full border-2 border-gray-300 rounded-xl shadow-md p-4 bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="">একটি জেলা নির্বাচন করুন</option>
-            {districts.map((district) => (
+            {districts.map(district => (
               <option key={district._id} value={district.district}>
                 {district.district}
               </option>
@@ -188,45 +191,45 @@ export default function FertilizerRecommendationForm() {
         {/* Form Fields */}
         {[
           {
-            label: "নাইট্রোজেন",
-            name: "N",
-            placeholder: "নাইট্রোজেনের পরিমাণ (%)",
+            label: 'নাইট্রোজেন',
+            name: 'N',
+            placeholder: 'নাইট্রোজেনের পরিমাণ (%)',
           },
-          { label: "ফসফরাস", name: "P", placeholder: "ফসফরাসের পরিমাণ (ug/g)" },
+          { label: 'ফসফরাস', name: 'P', placeholder: 'ফসফরাসের পরিমাণ (ug/g)' },
           {
-            label: "পটাসিয়াম",
-            name: "K",
-            placeholder: "পটাসিয়ামের পরিমাণ (ug/g)",
-          },
-          {
-            label: "তাপমাত্রা (\u00B0C)",
-            name: "temperature",
-            placeholder: "তাপমাত্রা ইনপুট করুন",
+            label: 'পটাসিয়াম',
+            name: 'K',
+            placeholder: 'পটাসিয়ামের পরিমাণ (ug/g)',
           },
           {
-            label: "আর্দ্রতা",
-            name: "humidity",
-            placeholder: "আর্দ্রতা ইনপুট করুন",
-          },
-          { label: "pH মান", name: "ph", placeholder: "pH মান ইনপুট করুন" },
-          {
-            label: "বৃষ্টিপাত (মিমি)",
-            name: "rainfall",
-            placeholder: "গড় বৃষ্টিপাত (মিমি)",
+            label: 'তাপমাত্রা (\u00B0C)',
+            name: 'temperature',
+            placeholder: 'তাপমাত্রা ইনপুট করুন',
           },
           {
-            label: "মাটির ধরন",
-            name: "soil_type",
-            type: "select",
+            label: 'আর্দ্রতা',
+            name: 'humidity',
+            placeholder: 'আর্দ্রতা ইনপুট করুন',
+          },
+          { label: 'pH মান', name: 'ph', placeholder: 'pH মান ইনপুট করুন' },
+          {
+            label: 'বৃষ্টিপাত (মিমি)',
+            name: 'rainfall',
+            placeholder: 'গড় বৃষ্টিপাত (মিমি)',
+          },
+          {
+            label: 'মাটির ধরন',
+            name: 'soil_type',
+            type: 'select',
             options: soilTypes,
           },
           {
-            label: "ফসলের ধরন",
-            name: "crop_type",
-            type: "select",
+            label: 'ফসলের ধরন',
+            name: 'crop_type',
+            type: 'select',
             options: cropTypes,
           },
-        ].map((field) => (
+        ].map(field => (
           <div key={field.name}>
             <label
               htmlFor={field.name}
@@ -234,7 +237,7 @@ export default function FertilizerRecommendationForm() {
             >
               {field.label}:
             </label>
-            {field.type === "select" ? (
+            {field.type === 'select' ? (
               <select
                 id={field.name}
                 name={field.name}
@@ -244,7 +247,7 @@ export default function FertilizerRecommendationForm() {
                 className="mt-2 w-full border-2 border-gray-300 rounded-xl shadow-md p-4 bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <option value="">{field.label} নির্বাচন করুন</option>
-                {field.options.map((option) => (
+                {field.options.map(option => (
                   <option key={option.id} value={option.id}>
                     {option.name}
                   </option>
@@ -274,7 +277,7 @@ export default function FertilizerRecommendationForm() {
           whileTap={{ scale: 0.95 }}
           disabled={loading}
         >
-          {loading ? "লোড হচ্ছে..." : "সার সুপারিশ পান"}
+          {loading ? 'লোড হচ্ছে...' : 'সার সুপারিশ পান'}
         </motion.button>
       </form>
 
@@ -291,7 +294,7 @@ export default function FertilizerRecommendationForm() {
             <p className="mt-1 text-lg">{recommendation}</p>
           </div>
           <p className="mt-4 text-sm text-gray-600">
-            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে{" "}
+            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে{' '}
             <span
               onClick={generateReport}
               className="text-blue-600 underline cursor-pointer hover:text-blue-800"

@@ -358,7 +358,6 @@
 //   );
 // }
 
-
 'use client';
 
 import { motion } from 'framer-motion';
@@ -476,7 +475,10 @@ export default function FertilizerRecommendationForm() {
 
     try {
       const response = await fetch(
-        'http://localhost:8000/recommendfertilizer',
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          'https://krishok-bondhu-backend-1.onrender.com'
+        }/recommendfertilizer`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -542,9 +544,7 @@ export default function FertilizerRecommendationForm() {
     doc.setFontSize(10);
     doc.text(`রিপোর্ট তৈরির তারিখ: ${currentDate}`, 20, 280);
 
-    doc.save(
-      `সার_সুপারিশ_${formData.district}_${currentDate}.pdf`,
-    );
+    doc.save(`সার_সুপারিশ_${formData.district}_${currentDate}.pdf`);
   };
 
   return (
@@ -580,13 +580,33 @@ export default function FertilizerRecommendationForm() {
         </div>
 
         {[
-          { label: 'নাইট্রোজেন', name: 'N', placeholder: 'নাইট্রোজেনের পরিমাণ (%)' },
+          {
+            label: 'নাইট্রোজেন',
+            name: 'N',
+            placeholder: 'নাইট্রোজেনের পরিমাণ (%)',
+          },
           { label: 'ফসফরাস', name: 'P', placeholder: 'ফসফরাসের পরিমাণ (ug/g)' },
-          { label: 'পটাসিয়াম', name: 'K', placeholder: 'পটাসিয়ামের পরিমাণ (ug/g)' },
-          { label: 'তাপমাত্রা (°C)', name: 'temperature', placeholder: 'তাপমাত্রা ইনপুট করুন' },
-          { label: 'আর্দ্রতা', name: 'humidity', placeholder: 'আর্দ্রতা ইনপুট করুন' },
+          {
+            label: 'পটাসিয়াম',
+            name: 'K',
+            placeholder: 'পটাসিয়ামের পরিমাণ (ug/g)',
+          },
+          {
+            label: 'তাপমাত্রা (°C)',
+            name: 'temperature',
+            placeholder: 'তাপমাত্রা ইনপুট করুন',
+          },
+          {
+            label: 'আর্দ্রতা',
+            name: 'humidity',
+            placeholder: 'আর্দ্রতা ইনপুট করুন',
+          },
           { label: 'pH মান', name: 'ph', placeholder: 'pH মান ইনপুট করুন' },
-          { label: 'বৃষ্টিপাত (মিমি)', name: 'rainfall', placeholder: 'গড় বৃষ্টিপাত (মিমি)' },
+          {
+            label: 'বৃষ্টিপাত (মিমি)',
+            name: 'rainfall',
+            placeholder: 'গড় বৃষ্টিপাত (মিমি)',
+          },
           {
             label: 'মাটির ধরন',
             name: 'soil_type',
@@ -662,7 +682,7 @@ export default function FertilizerRecommendationForm() {
             <p className="mt-1 text-lg">{recommendation}</p>
           </div>
           <p className="mt-4 text-sm text-gray-600">
-            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে {' '}
+            বিস্তারিত রিপোর্টের জন্য PDF আকারে ডাউনলোড করতে{' '}
             <span
               onClick={generateReport}
               className="text-blue-600 underline cursor-pointer hover:text-blue-800"

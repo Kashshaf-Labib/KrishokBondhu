@@ -22,9 +22,15 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/message', {
-        message: userInput,
-      });
+      const response = await axios.post(
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          'https://krishok-bondhu-backend-1.onrender.com'
+        }/message`,
+        {
+          message: userInput,
+        },
+      );
 
       // Add bot response to chat
       if (response.data && response.data.content) {

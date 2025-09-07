@@ -1,8 +1,8 @@
-"use client";
-import { useAuth } from "@clerk/nextjs";
-import { Leaf, Upload, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+'use client';
+import { useAuth } from '@clerk/nextjs';
+import { Leaf, Upload, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 interface Prediction {
   disease: string;
@@ -23,14 +23,14 @@ export default function DiseasePredictionPage() {
 
   useEffect(() => {
     if (!isSignedIn) {
-      router.push("/sign-in");
+      router.push('/sign-in');
     }
   }, [isSignedIn, router]);
 
   const handleImageUpload = (
-    event: React.ChangeEvent<HTMLInputElement> | File
+    event: React.ChangeEvent<HTMLInputElement> | File,
   ) => {
-    const file = "target" in event ? event.target.files?.[0] : event;
+    const file = 'target' in event ? event.target.files?.[0] : event;
     if (file) {
       setSelectedFile(file);
       setSelectedImage(URL.createObjectURL(file));
@@ -41,9 +41,9 @@ export default function DiseasePredictionPage() {
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -62,12 +62,12 @@ export default function DiseasePredictionPage() {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      formData.append("file", selectedFile);
+      formData.append('file', selectedFile);
 
-      const response = await fetch("/api/disease-detection", {
-        method: "POST",
+      const response = await fetch('/api/disease-detection', {
+        method: 'POST',
         body: formData,
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -78,18 +78,24 @@ export default function DiseasePredictionPage() {
 
       if (data.success) {
         try {
-          const queryResponse = await fetch("http://localhost:8000/query", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+          const queryResponse = await fetch(
+            `${
+              process.env.NEXT_PUBLIC_API_URL ||
+              'https://krishok-bondhu-backend-1.onrender.com'
+            }/query`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                query: `Give me a brief severity analysis and 3 specific prevention recommendations for ${data.data.disease} plant disease.`,
+              }),
             },
-            body: JSON.stringify({
-              query: `Give me a brief severity analysis and 3 specific prevention recommendations for ${data.data.disease} plant disease.`,
-            }),
-          });
+          );
 
           if (!queryResponse.ok) {
-            throw new Error("Failed to get recommendations");
+            throw new Error('Failed to get recommendations');
           }
 
           const recommendationData = await queryResponse.json();
@@ -102,21 +108,21 @@ export default function DiseasePredictionPage() {
             recommendations: parsedRecommendations.recommendations,
           });
         } catch (queryError) {
-          console.error("Query error:", queryError);
+          console.error('Query error:', queryError);
           setPrediction({
             disease: data.data.disease,
             confidence: data.data.confidence,
-            severity: "রোগের মাত্রা নির্ধারণ করা যায়নি",
+            severity: 'রোগের মাত্রা নির্ধারণ করা যায়নি',
             recommendations: [
-              "সুপারিশ পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।",
+              'সুপারিশ পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।',
             ],
           });
         }
       } else {
-        throw new Error(data.message || "Prediction failed");
+        throw new Error(data.message || 'Prediction failed');
       }
     } catch (error) {
-      console.error("Error during prediction:", error);
+      console.error('Error during prediction:', error);
       setPrediction(null);
     } finally {
       setIsLoading(false);
@@ -143,17 +149,17 @@ export default function DiseasePredictionPage() {
 
     try {
       // Convert the image to base64
-      const imageBase64 = await new Promise<string>((resolve) => {
+      const imageBase64 = await new Promise<string>(resolve => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
         reader.readAsDataURL(selectedFile!);
       });
 
       // Call the API route to generate PDF on the server
-      const response = await fetch("/api/generate-disease-pdf", {
-        method: "POST",
+      const response = await fetch('/api/generate-disease-pdf', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           prediction,
@@ -162,7 +168,7 @@ export default function DiseasePredictionPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to generate PDF");
+        throw new Error('Failed to generate PDF');
       }
 
       // Get the PDF as a blob
@@ -170,9 +176,9 @@ export default function DiseasePredictionPage() {
 
       // Create a download link
       const url = URL.createObjectURL(pdfBlob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "disease_prediction_report.pdf";
+      a.download = 'disease_prediction_report.pdf';
       document.body.appendChild(a);
       a.click();
 
@@ -180,8 +186,8 @@ export default function DiseasePredictionPage() {
       URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
-      console.error("Error generating PDF:", error);
-      alert("PDF তৈরি করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+      console.error('Error generating PDF:', error);
+      alert('PDF তৈরি করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
     } finally {
       setPdfGenerating(false);
     }
@@ -220,10 +226,10 @@ export default function DiseasePredictionPage() {
               className={`relative h-80 border-2 rounded-xl flex items-center justify-center
                 ${
                   dragActive
-                    ? "border-green-500 bg-green-50"
-                    : "border-dashed border-gray-300"
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-dashed border-gray-300'
                 }
-                ${selectedImage ? "border-solid border-green-500" : ""}`}
+                ${selectedImage ? 'border-solid border-green-500' : ''}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
@@ -271,18 +277,18 @@ export default function DiseasePredictionPage() {
                 className={`mt-6 w-full py-4 rounded-xl text-white font-medium 
                   ${
                     isLoading
-                      ? "bg-gray-400"
-                      : "bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900"
+                      ? 'bg-gray-400'
+                      : 'bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900'
                   }`}
               >
-                {isLoading ? "ছবি বিশ্লেষণ করা হচ্ছে..." : "বিশ্লেষণ শুরু করুন"}
+                {isLoading ? 'ছবি বিশ্লেষণ করা হচ্ছে...' : 'বিশ্লেষণ শুরু করুন'}
               </button>
             )}
           </div>
 
           <div
             className={`bg-white/80 backdrop-blur-sm shadow-xl rounded-xl p-6 transition-all duration-500 
-            ${prediction ? "opacity-100" : "opacity-0"}`}
+            ${prediction ? 'opacity-100' : 'opacity-0'}`}
           >
             {prediction ? (
               <div className="space-y-6">
@@ -320,8 +326,8 @@ export default function DiseasePredictionPage() {
                 disabled={pdfGenerating}
               >
                 {pdfGenerating
-                  ? "রিপোর্ট তৈরি হচ্ছে..."
-                  : "রিপোর্ট ডাউনলোড করুন"}
+                  ? 'রিপোর্ট তৈরি হচ্ছে...'
+                  : 'রিপোর্ট ডাউনলোড করুন'}
               </button>
             </div>
           )}

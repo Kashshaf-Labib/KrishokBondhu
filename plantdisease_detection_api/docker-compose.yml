@@ -4,7 +4,7 @@ services:
   api:
     build: .
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       - GROQ_API_KEY=${GROQ_API_KEY}
       - MODEL_NAME=${MODEL_NAME}
@@ -12,6 +12,7 @@ services:
       - MAX_TOKENS=${MAX_TOKENS}
       - TIMEOUT=${TIMEOUT}
       - MAX_RETRIES=${MAX_RETRIES}
+      - FRONTEND_URL=http://localhost:3000 # For local development
     env_file:
       - .env
     volumes:

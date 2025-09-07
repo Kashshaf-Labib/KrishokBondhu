@@ -63,13 +63,18 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Allow all origins (for development purposes)
+# Updated CORS configuration for production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can specify a list of origins, e.g., ["http://localhost:3000"]
+    allow_origins=[
+        "http://localhost:3000",
+        "https://krishok-bondhu.vercel.app",
+        "https://krishok-bondhu-*.vercel.app",  # For preview deployments
+        "*"  # Remove this in production for better security
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 # Load the model
@@ -308,7 +313,12 @@ def chat_message(request: ChatMessage):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+    return {
+        "status": "healthy", 
+        "timestamp": datetime.now().isoformat(),
+        "service": "KrishokBondhu API",
+        "version": "1.0.0"
+    }
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
