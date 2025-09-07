@@ -32,8 +32,10 @@ const Chatbot = () => {
         },
       );
 
+      console.log('Backend response:', response.data); // Debug log
+
       // Add bot response to chat
-      if (response.data && response.data.content) {
+      if (response.data && typeof response.data.content === 'string') {
         setChatLog(prev => [
           ...prev,
           {
@@ -42,10 +44,24 @@ const Chatbot = () => {
           },
         ]);
       } else {
-        throw new Error('Invalid response format');
+        console.error('Invalid response format:', response.data);
+        throw new Error('Invalid response format - content field missing or not a string');
       }
     } catch (error) {
       console.error('Chat error:', error);
+      
+      // Better error logging with type safety
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          statusText: error.response?.statusText
+        });
+      } else {
+        console.error('Non-axios error:', error instanceof Error ? error.message : 'Unknown error');
+      }
+      
       setChatLog(prev => [
         ...prev,
         {
