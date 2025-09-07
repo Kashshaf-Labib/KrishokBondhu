@@ -99,7 +99,7 @@ export default function DiseasePredictionPage() {
           }
 
           const recommendationData = await queryResponse.json();
-          const parsedRecommendations = JSON.parse(recommendationData.content);
+          const parsedRecommendations = JSON.parse(recommendationData.response);
 
           setPrediction({
             disease: parsedRecommendations.disease || data.data.disease,
